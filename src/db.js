@@ -69,6 +69,34 @@ function createDatabase(config) {
     );
   `);
 
+  db.exec(`
+    CREATE INDEX IF NOT EXISTS idx_posts_published_created ON posts (published, created_at DESC);
+    CREATE INDEX IF NOT EXISTS idx_comments_post_created ON comments (post_id, created_at DESC);
+    CREATE VIRTUAL TABLE IF NOT EXISTS posts_search USING fts5(
+      title, excerpt, content, tags,
+      content='posts',
+      content_rowid='id'
+    );
+    CREATE TRIGGER IF NOT EXISTS posts_search_ai AFTER INSERT ON posts BEGIN
+      INSERT INTO posts_search(rowid, title, excerpt, content, tags)
+      VALUES (new.id, new.title, new.excerpt, new.content, new.tags);
+    END;
+    CREATE TRIGGER IF NOT EXISTS posts_search_ad AFTER DELETE ON posts BEGIN
+      INSERT INTO posts_search(posts_search, rowid, title, excerpt, content, tags)
+      VALUES ('delete', old.id, old.title, old.excerpt, old.content, old.tags);
+    END;
+    CREATE TRIGGER IF NOT EXISTS posts_search_au AFTER UPDATE ON posts BEGIN
+      INSERT INTO posts_search(posts_search, rowid, title, excerpt, content, tags)
+      VALUES ('delete', old.id, old.title, old.excerpt, old.content, old.tags);
+      INSERT INTO posts_search(rowid, title, excerpt, content, tags)
+      VALUES (new.id, new.title, new.excerpt, new.content, new.tags);
+    END;
+  `);
+
+  const postCount = db.prepare('SELECT COUNT(*) AS count FROM posts').get().count;
+  const searchCount = db.prepare('SELECT COUNT(*) AS count FROM posts_search').get().count;
+  if (postCount !== searchCount) db.exec("INSERT INTO posts_search(posts_search) VALUES ('rebuild')");
+
   const columns = new Set(db.prepare('PRAGMA table_info(posts)').all().map((column) => column.name));
   if (!columns.has('tags')) db.exec("ALTER TABLE posts ADD COLUMN tags TEXT NOT NULL DEFAULT ''");
   if (!columns.has('cover_image')) db.exec("ALTER TABLE posts ADD COLUMN cover_image TEXT NOT NULL DEFAULT ''");
