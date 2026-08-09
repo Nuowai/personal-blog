@@ -1,6 +1,6 @@
 const express = require('express');
 const { AppError, asyncHandler } = require('../http');
-const { publicPostFields, splitTags, normalizeTags, formatPost, makeSlug } = require('../format');
+const { publicPostFields, normalizeTags, formatPost, makeSlug } = require('../format');
 const { validatePost } = require('../validation');
 const { safeEqual } = require('../security');
 
