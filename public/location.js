@@ -1,15 +1,23 @@
-const { $, t, request, setHint } = window.Sakura;
+const { $, t, request, errorMessage, setHint } = window.Sakura;
 const widget = $('#location-widget');
 let map;
 let currentCity = '110000';
+let mapScriptPromise;
 
 function setLocationText(message) { const node = $('#location-info'); if (node) node.textContent = message; }
 function setWeatherText(message) { const node = $('#weather-info'); if (node) node.textContent = message; }
 function loadScript(src) {
-  return new Promise((resolve, reject) => {
+  if (window.AMap) return Promise.resolve();
+  if (mapScriptPromise) return mapScriptPromise;
+  mapScriptPromise = new Promise((resolve, reject) => {
     const script = document.createElement('script');
-    script.src = src; script.async = true; script.onload = resolve; script.onerror = () => reject(new Error('地图脚本加载失败')); document.head.appendChild(script);
+    script.src = src;
+    script.async = true;
+    script.onload = resolve;
+    script.onerror = () => { mapScriptPromise = null; reject(new Error('地图脚本加载失败')); };
+    document.head.appendChild(script);
   });
+  return mapScriptPromise;
 }
 async function loadWeather(city = currentCity) {
   currentCity = city || currentCity;
@@ -19,11 +27,12 @@ async function loadWeather(city = currentCity) {
     if (data.code && data.code !== '1') throw new Error(data.info || '天气查询失败');
     const weather = data.lives?.[0];
     setWeatherText(weather ? `${weather.city} · ${weather.weather} · ${weather.temperature}℃ · ${weather.winddirection}${weather.windpower}级` : t('weather.notConfigured'));
-  } catch (error) { setWeatherText(error.message || t('weather.notConfigured')); }
+  } catch (error) { setWeatherText(errorMessage(error, 'weather.notConfigured')); }
 }
 async function initMap() {
   if (!widget) return;
   setLocationText(t('location.loading'));
+  if (map) return loadWeather();
   try {
     const config = await request('/api/location-config');
     if (!config.amapJsKey) { setLocationText(t('location.notConfigured')); return loadWeather(); }
@@ -40,12 +49,12 @@ async function initMap() {
         if (result.position) map.setCenter(result.position);
         loadWeather(currentCity);
       } else {
-        setLocationText('定位失败，使用默认城市');
+        setLocationText(t('location.failed'));
         loadWeather();
       }
     });
-  } catch (error) { setLocationText(error.message || t('location.notConfigured')); loadWeather(); }
+  } catch (error) { setLocationText(errorMessage(error, 'location.notConfigured')); loadWeather(); }
 }
 $('#location-refresh')?.addEventListener('click', initMap);
-window.addEventListener('sakura:locale-change', () => { if (!map) { setLocationText(t('location.notConfigured')); setWeatherText(t('weather.notConfigured')); } });
+window.addEventListener('sakura:locale-change', () => { if (map) loadWeather(currentCity); else { setLocationText(t('location.notConfigured')); setWeatherText(t('weather.notConfigured')); } });
 initMap();
