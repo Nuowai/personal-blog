@@ -33,7 +33,7 @@ function createIntegrationsRouter({ db, config }) {
   apiRouter.get('/location-config', (req, res) => res.json({ amapJsKey: config.amapJsKey, securityJsCode: config.amapSecurityCode }));
 
   apiRouter.get('/weather', asyncHandler(async (req, res) => {
-    if (!config.amapWebKey) return res.json({ error: '站点未配置高德天气 Key', code: 'WEATHER_NOT_CONFIGURED' });
+    if (!config.amapWebKey) throw new AppError(503, 'WEATHER_NOT_CONFIGURED', '天气服务未配置');
     const city = String(req.query.city || '110000').replace(/[^0-9]/g, '').slice(0, 12);
     const upstream = await fetch(`https://restapi.amap.com/v3/weather/weatherInfo?key=${encodeURIComponent(config.amapWebKey)}&city=${encodeURIComponent(city)}&extensions=base`, { signal: AbortSignal.timeout(10000) });
     const data = await upstream.json();
