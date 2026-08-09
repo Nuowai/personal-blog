@@ -23,3 +23,9 @@ test('post validation trims and bounds content', () => {
   assert.equal(post.content, '正文');
   assert.equal(post.published, true);
 });
+
+
+test('rejects non-string and non-boolean input', () => {
+  assert.throws(() => validatePost({ title: 1, content: '正文' }), { code: 'INVALID_TYPE' });
+  assert.throws(() => validatePost({ title: '标题', content: '正文', published: 'true' }), { code: 'INVALID_TYPE' });
+});
