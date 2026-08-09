@@ -32,6 +32,52 @@
       'location.loading': '正在定位附近城市…',
       'weather.loading': '天气信息加载中…',
       'weather.notConfigured': '站点未配置天气服务',
+      'errors.ADMIN_NOT_CONFIGURED': '管理员尚未配置',
+      'errors.ADMIN_UNAUTHORIZED': '管理员密钥不正确',
+      'errors.DEEPSEEK_KEY_REQUIRED': '请先填写 DeepSeek API Key',
+      'errors.DEEPSEEK_MESSAGES_REQUIRED': '消息不能为空',
+      'errors.DEEPSEEK_UPSTREAM_ERROR': 'DeepSeek 服务暂时不可用',
+      'errors.EMAIL_EXISTS': '该邮箱已注册',
+      'errors.GOOGLE_NOT_CONFIGURED': 'Google 登录尚未配置',
+      'errors.INTERNAL_ERROR': '服务器内部错误',
+      'errors.INVALID_CREDENTIALS': '邮箱或密码不正确',
+      'errors.INVALID_EMAIL': '邮箱格式不正确',
+      'errors.INVALID_GOOGLE_CREDENTIAL': 'Google 登录凭证无效',
+      'errors.INVALID_PASSWORD': '密码长度需要在 8 到 200 个字符之间',
+      'errors.INVALID_SETTING': '网站设置格式不正确',
+      'errors.INVALID_THEME': '主题无效',
+      'errors.MEDIA_NOT_FOUND': '媒体文件没有找到',
+      'errors.MEDIA_REQUIRED': '请选择支持的媒体文件',
+      'errors.MEDIA_TOO_LARGE': '媒体文件超过大小限制',
+      'errors.NOT_FOUND': '请求资源不存在',
+      'errors.POST_NOT_FOUND': '文章没有找到',
+      'errors.RATE_LIMITED': '请求过于频繁，请稍后再试',
+      'errors.VALIDATION_ERROR': '提交内容不符合要求',
+      'errors.WEATHER_NOT_CONFIGURED': '天气服务尚未配置',
+      'errors.WEATHER_UPSTREAM_ERROR': '天气服务暂时不可用'
+      'errors.ADMIN_NOT_CONFIGURED': 'Administrator access is not configured.',
+      'errors.ADMIN_UNAUTHORIZED': 'The administrator token is incorrect.',
+      'errors.DEEPSEEK_KEY_REQUIRED': 'Enter a DeepSeek API key first.',
+      'errors.DEEPSEEK_MESSAGES_REQUIRED': 'Message content is required.',
+      'errors.DEEPSEEK_UPSTREAM_ERROR': 'DeepSeek is temporarily unavailable.',
+      'errors.EMAIL_EXISTS': 'This email is already registered.',
+      'errors.GOOGLE_NOT_CONFIGURED': 'Google sign-in is not configured.',
+      'errors.INTERNAL_ERROR': 'The server encountered an internal error.',
+      'errors.INVALID_CREDENTIALS': 'The email or password is incorrect.',
+      'errors.INVALID_EMAIL': 'The email format is invalid.',
+      'errors.INVALID_GOOGLE_CREDENTIAL': 'The Google credential is invalid.',
+      'errors.INVALID_PASSWORD': 'Password must be between 8 and 200 characters.',
+      'errors.INVALID_SETTING': 'The site setting is invalid.',
+      'errors.INVALID_THEME': 'The selected theme is invalid.',
+      'errors.MEDIA_NOT_FOUND': 'Media file not found.',
+      'errors.MEDIA_REQUIRED': 'Choose a supported media file.',
+      'errors.MEDIA_TOO_LARGE': 'The media file is too large.',
+      'errors.NOT_FOUND': 'The requested resource was not found.',
+      'errors.POST_NOT_FOUND': 'Post not found.',
+      'errors.RATE_LIMITED': 'Too many requests. Please try again later.',
+      'errors.VALIDATION_ERROR': 'The submitted data is invalid.',
+      'errors.WEATHER_NOT_CONFIGURED': 'Weather service is not configured.',
+      'errors.WEATHER_UPSTREAM_ERROR': 'Weather service is temporarily unavailable.'
       'admin.invalidToken': '管理员密钥不正确',
       'admin.saved': '保存成功 ✨',
       'admin.deleted': '已删除。',
@@ -114,6 +160,11 @@
     node.textContent = message;
     node.classList.toggle('error', error);
   }
+  function errorMessage(error, fallback = 'common.networkError') {
+    const key = error?.code ? `errors.${error.code}` : fallback;
+    const translated = t(key);
+    return translated === key ? t(fallback) : translated;
+  }
   function applyStaticTranslations() {
     $('[data-i18n]').forEach((node) => { node.textContent = t(node.dataset.i18n); });
     $('[data-i18n-html]').forEach((node) => { node.innerHTML = t(node.dataset.i18nHtml); });
@@ -147,9 +198,15 @@
     }
     if (settings.siteDescription) description.content = settings.siteDescription;
   }
-  async function initSiteSettings() {
-    try { applySiteSettings(await request('/api/settings')); }
-    catch (error) { console.warn('Unable to load site settings', error); }
+  let siteSettingsPromise;
+  function initSiteSettings() {
+    if (!siteSettingsPromise) {
+      siteSettingsPromise = request('/api/settings').then((settings) => {
+        applySiteSettings(settings);
+        return settings;
+      });
+    }
+    return siteSettingsPromise;
   }
   function setLocale(locale) {
     state.locale = locale === 'en' ? 'en' : 'zh-CN';
@@ -166,7 +223,7 @@
     setLocale(state.locale);
     $$('#locale-toggle').forEach((node) => node.addEventListener('click', () => setLocale(state.locale === 'en' ? 'zh-CN' : 'en')));
   }
-  window.Sakura = { $, $$, t, escapeHtml, safeUrl, formatDate, request, RequestError, setHint, setLocale, initLocale, getLocale: () => state.locale };
+  window.Sakura = { $, $, t, escapeHtml, safeUrl, formatDate, request, RequestError, errorMessage, setHint, setLocale, initLocale, initSiteSettings, getLocale: () => state.locale };
   initLocale();
-  initSiteSettings();
+  initSiteSettings().catch((error) => { document.documentElement.dataset.settingsError = 'true'; console.error('Site settings failed to load', error); });
 })();
