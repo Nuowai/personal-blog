@@ -119,18 +119,32 @@
     $('[data-i18n-html]').forEach((node) => { node.innerHTML = t(node.dataset.i18nHtml); });
     $('[data-i18n-placeholder]').forEach((node) => { node.placeholder = t(node.dataset.i18nPlaceholder); });
   }
-  function applySiteSettings(settings) {
+  function applySiteSettings(settings = {}) {
     const iconUrl = safeUrl(settings.faviconUrl);
     let icon = document.querySelector('link[rel="icon"]');
-    if (!icon) { icon = document.createElement('link'); icon.rel = 'icon'; document.head.appendChild(icon); }
+    if (!icon) {
+      icon = document.createElement('link');
+      icon.rel = 'icon';
+      document.head.appendChild(icon);
+    }
     if (iconUrl) icon.href = iconUrl;
+    else icon.removeAttribute('href');
+
     const wallpaperUrl = safeUrl(settings.wallpaperUrl);
     document.body.classList.toggle('custom-wallpaper', Boolean(wallpaperUrl));
     document.body.style.setProperty('--custom-wallpaper-image', wallpaperUrl ? `url("${wallpaperUrl.replace(/["\\\\)]/g, '')}")` : '');
     document.querySelectorAll('.video-bg').forEach((video) => { video.style.opacity = wallpaperUrl ? '0' : ''; });
-    if (settings.siteTitle && !document.title.includes('·')) document.title = settings.siteTitle;
-    const description = document.querySelector('meta[name="description"]');
-    if (description && settings.siteDescription) description.content = settings.siteDescription;
+
+    const genericTitles = new Set(['', 'Sakura Note · 樱花汽水日记', '文章 · Sakura Note', 'Article · Sakura Note', '写文章 · Sakura Note', 'Write · Sakura Note', '登录 / 注册 · Sakura Note', 'Login / Register · Sakura Note']);
+    if (settings.siteTitle && genericTitles.has(document.title)) document.title = settings.siteTitle;
+
+    let description = document.querySelector('meta[name="description"]');
+    if (!description) {
+      description = document.createElement('meta');
+      description.name = 'description';
+      document.head.appendChild(description);
+    }
+    if (settings.siteDescription) description.content = settings.siteDescription;
   }
   async function initSiteSettings() {
     try { applySiteSettings(await request('/api/settings')); }
@@ -151,7 +165,7 @@
     setLocale(state.locale);
     $$('#locale-toggle').forEach((node) => node.addEventListener('click', () => setLocale(state.locale === 'en' ? 'zh-CN' : 'en')));
   }
-  window.Sakura = { $, $, t, escapeHtml, safeUrl, formatDate, request, RequestError, setHint, setLocale, initLocale, getLocale: () => state.locale };
+  window.Sakura = { $, $$, t, escapeHtml, safeUrl, formatDate, request, RequestError, setHint, setLocale, initLocale, getLocale: () => state.locale };
   initLocale();
   initSiteSettings();
 })();
