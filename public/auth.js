@@ -1,4 +1,4 @@
-const { $, t, request, setHint, initLocale } = window.Sakura;
+const { $, t, request, setHint } = window.Sakura;
 
 function showAuthUser(user) {
   const link = $('#auth-link');
@@ -61,6 +61,5 @@ function initAuthPage() {
   window.addEventListener('sakura:locale-change', renderMode);
   renderMode(); setupGoogleSignIn();
 }
-initLocale();
 loadCurrentUser();
 initAuthPage();
