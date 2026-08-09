@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('node:path');
+const crypto = require('node:crypto');
 const { notFound, errorHandler } = require('./http');
 const { createAuthRouter } = require('./routes/auth');
 const { createPostsRouter } = require('./routes/posts');
@@ -12,6 +13,7 @@ const { createFeedRouter } = require('./routes/feeds');
 function createApp({ db, config }) {
   const app = express();
   app.disable('x-powered-by');
+  app.use((req, res, next) => { req.requestId = crypto.randomUUID(); res.setHeader('x-request-id', req.requestId); next(); });
   app.use(express.json({ limit: '2mb' }));
   app.use(express.static(config.publicDir));
   app.use('/uploads', express.static(config.uploadDir));
