@@ -21,4 +21,8 @@ npm install
 ADMIN_TOKEN=change-me npm start
 ```
 
-打开 `http://localhost:3000`，后台 `http://localhost:3000/admin.html`。\n\n管理员必须配置 `ADMIN_TOKEN`；启用 Google 登录时，再配置 `GOOGLE_CLIENT_ID`。生产环境不要使用示例密钥。\n\n检查代码：`npm run check`；运行测试：`npm test`。
+打开 `http://localhost:3000`，后台 `http://localhost:3000/admin.html`。
+
+管理员必须配置 `ADMIN_TOKEN`；启用 Google 登录时，再配置 `GOOGLE_CLIENT_ID`。生产环境不要使用示例密钥。
+
+检查代码：`npm run check`；运行测试：`npm test`。
