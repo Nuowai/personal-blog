@@ -6,6 +6,11 @@ function assertObject(value) {
   return value;
 }
 
+function assertKeys(value, allowed) {
+  const unknown = Object.keys(value).filter((key) => !allowed.has(key));
+  if (unknown.length) throw new AppError(400, 'INVALID_TYPE', `不支持的字段：${unknown.join(', ')}`);
+}
+
 function text(value, field, { min = 0, max = 5000, required = false } = {}) {
   if (value !== undefined && value !== null && typeof value !== 'string') throw new AppError(400, 'INVALID_TYPE', `${field}必须是字符串`);
   const normalized = String(value ?? '').trim();
@@ -17,6 +22,7 @@ function text(value, field, { min = 0, max = 5000, required = false } = {}) {
 
 function validateAuth(body, { register = false } = {}) {
   body = assertObject(body);
+  assertKeys(body, new Set(['email', 'password', 'name']));
   const email = text(body.email, '邮箱', { min: 1, max: 200, required: true }).toLowerCase();
   const password = text(body.password, '密码', { min: 8, max: 200, required: true });
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new AppError(400, 'INVALID_EMAIL', '邮箱格式不正确');
@@ -25,6 +31,7 @@ function validateAuth(body, { register = false } = {}) {
 
 function validatePost(body) {
   body = assertObject(body);
+  assertKeys(body, new Set(['title', 'excerpt', 'content', 'category', 'tags', 'cover_emoji', 'cover_image', 'published']));
   if (body.published !== undefined && typeof body.published !== 'boolean') throw new AppError(400, 'INVALID_TYPE', 'published 必须是布尔值');
   const tags = Array.isArray(body.tags) ? body.tags.map((tag) => text(tag, '标签', { max: 40 })).join(',') : body.tags;
   return {
@@ -41,9 +48,10 @@ function validatePost(body) {
 
 function validateMessage(body, field, max) {
   body = assertObject(body);
+  assertKeys(body, new Set(['nickname', 'message']));
   return {
     nickname: text(body.nickname, '昵称', { min: 1, max: 30, required: true }),
     message: text(body.message, field, { min: 1, max, required: true })
   };
 }
-module.exports = { assertObject, text, validateAuth, validatePost, validateMessage };
+module.exports = { assertObject, assertKeys, text, validateAuth, validatePost, validateMessage };
