@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#ff7fa7">
+  <title>登录 / 注册 · Sakura Note</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <style>
+    .auth-shell{max-width:520px;margin:8vh auto;padding:24px}
+    .auth-card{padding:32px}
+    .auth-card h1{margin:.35rem 0 .5rem}
+    .auth-form{display:grid;gap:12px;margin-top:20px}
+    .auth-form input{width:100%;box-sizing:border-box;padding:13px 15px;border:1px solid rgba(120,80,100,.18);border-radius:14px;background:rgba(255,255,255,.8);font:inherit}
+    .auth-divider{display:flex;align-items:center;gap:12px;margin:22px 0;color:#9b7b8b;font-size:.9rem}
+    .auth-divider::before,.auth-divider::after{content:"";height:1px;flex:1;background:rgba(120,80,100,.18)}
+    #google-button{min-height:42px;display:flex;justify-content:center}
+    .auth-hint{min-height:1.4em;color:#8d7180;font-size:.92rem}
+    .auth-hint.error{color:#c74d6b}
+    .auth-switch{text-align:center;margin-top:18px;color:#8d7180}
+    .auth-switch button{border:0;background:none;color:#d35f86;cursor:pointer;font:inherit}
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/"><span class="brand-mark">🌸</span><span><strong>Sakura Note</strong><small>樱花汽水日记</small></span></a>
+    <nav class="top-nav"><a href="/">回到首页</a></nav>
+  </header>
+  <main class="auth-shell">
+    <section class="mini-card auth-card">
+      <span class="section-kicker">WELCOME BACK</span>
+      <h1 id="auth-title">登录小宇宙</h1>
+      <p id="auth-subtitle">登录后可以留下属于你的脚印～</p>
+      <form id="auth-form" class="auth-form">
+        <input id="auth-name" name="name" placeholder="昵称（注册时填写）" autocomplete="name" hidden>
+        <input id="auth-email" name="email" type="email" placeholder="邮箱" autocomplete="email" required>
+        <input id="auth-password" name="password" type="password" placeholder="密码（至少 8 位）" autocomplete="current-password" minlength="8" required>
+        <button class="button button-primary" type="submit"><span id="auth-submit">登录</span> <span>→</span></button>
+        <div id="auth-hint" class="auth-hint" role="status"></div>
+      </form>
+      <div class="auth-divider">或使用 Google</div>
+      <div id="google-button"></div>
+      <div id="google-hint" class="auth-hint"></div>
+      <p class="auth-switch"><span id="switch-text">还没有账号？</span><button id="switch-mode" type="button">注册一个</button></p>
+    </section>
+  </main>
+  <script src="/auth.js" defer></script>
+</body>
+</html>
