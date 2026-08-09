@@ -120,7 +120,7 @@
       'errors.RATE_LIMITED': 'Too many requests. Please try again later.',
       'errors.VALIDATION_ERROR': 'The submitted data is invalid.',
       'errors.WEATHER_NOT_CONFIGURED': 'Weather service is not configured.',
-      'errors.WEATHER_UPSTREAM_ERROR': 'Weather service is temporarily unavailable.'
+      'errors.WEATHER_UPSTREAM_ERROR': 'Weather service is temporarily unavailable.',
       'admin.invalidToken': 'The administrator token is incorrect',
       'admin.saved': 'Saved ✨',
       'admin.deleted': 'Deleted.',
