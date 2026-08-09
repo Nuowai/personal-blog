@@ -33,8 +33,8 @@ function createPostsRouter({ db, config }) {
     const keyword = String(req.query.q || '').trim().slice(0, 100);
     const tag = String(req.query.tag || '').trim().slice(0, 40);
     if (keyword) {
-      query += ' AND (title LIKE ? OR excerpt LIKE ? OR content LIKE ?)';
-      params.push(`%${keyword}%`, `%${keyword}%`, `%${keyword}%`);
+      query += ' AND id IN (SELECT rowid FROM posts_search WHERE posts_search MATCH ?)';
+      params.push(`"${keyword.replace(/"/g, '""')}"`);
     }
     if (tag) {
       query += ` AND (',' || tags || ',') LIKE ?`;
