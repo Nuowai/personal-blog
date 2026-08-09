@@ -39,6 +39,7 @@ function hashToken(token) {
 function setSessionCookie(res, db, userId, config) {
   const token = crypto.randomBytes(32).toString('hex');
   const expiresAt = new Date(Date.now() + config.sessionTtlMs).toISOString().replace('T', ' ').slice(0, 19);
+  db.prepare("DELETE FROM sessions WHERE expires_at <= datetime('now')").run();
   db.prepare('INSERT OR REPLACE INTO sessions (token_hash, user_id, expires_at) VALUES (?, ?, ?)').run(hashToken(token), userId, expiresAt);
   const secure = config.nodeEnv === 'production' ? '; Secure' : '';
   res.setHeader('Set-Cookie', `sakura_session=${encodeURIComponent(token)}; Max-Age=${Math.floor(config.sessionTtlMs / 1000)}; Path=/; HttpOnly; SameSite=Lax${secure}`);
