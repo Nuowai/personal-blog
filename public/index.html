@@ -24,7 +24,7 @@
       <a class="active" href="#home">首页</a>
       <a href="#about">关于我</a>
       <a href="#guestbook">留言板</a>
-      <button class="theme-switcher" id="theme-toggle" type="button" title="切换主题">🌸</button><a id="auth-link" class="auth-link" href="/auth.html">登录 / 注册</a><a class="nav-admin" href="/admin.html">写文章<span>→</span></a>
+      <button class="theme-switcher" id="theme-toggle" type="button" title="切换主题">🌸</button><button class="locale-toggle" id="locale-toggle" type="button">English</button><a id="auth-link" class="auth-link" href="/auth.html">登录 / 注册</a><a class="nav-admin" href="/admin.html">写文章<span>→</span></a>
     </nav>
   </header>
   <aside class="location-widget" id="location-widget"><div class="location-title"><span>📍 我的位置</span><button id="location-refresh" type="button">↻</button></div><div id="amap-map" class="amap-map"><span>正在准备地图…</span></div><div id="location-info" class="location-info">正在定位附近城市…</div><div id="weather-info" class="weather-info">天气信息加载中…</div></aside>
@@ -91,6 +91,6 @@
     <div class="ai-chat" id="ai-chat"><div class="ai-bubble">嗯～我是博客里的小助手。填好 API Key 后，想聊点什么都可以呀 ✨</div></div>
     <form class="ai-input" id="ai-form"><textarea id="ai-message" rows="2" placeholder="和小助手说点什么…" required></textarea><button id="ai-send" type="submit" aria-label="发送">→</button></form>
   </section>
-  <script src="/sakura.js" defer></script><script src="/auth.js" defer></script><script src="/location.js" defer></script><script src="/app.js" defer></script>
+  <script src="/common.js" defer></script><script src="/sakura.js" defer></script><script src="/auth.js" defer></script><script src="/location.js" defer></script><script src="/app.js" defer></script>
 </body>
 </html>
