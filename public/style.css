@@ -15,3 +15,57 @@ body[data-theme="night"]{color:#eee1f1;background:#28233b}body[data-theme="night
 body[data-theme="mint"]{background:#f5fffb}body[data-theme="mint"] .hero-card{background:linear-gradient(115deg,#effff9,#e9fbf4 57%,#f1f8ff)}body[data-theme="mint"] .brand-mark,body[data-theme="mint"] .button-primary{background:linear-gradient(135deg,#65cbb4,#54aeda)}body[data-theme="mint"] .hero-copy h1 em{color:#52bca8}body[data-theme="mint"] .tag-filter.active,body[data-theme="mint"] .tag-filter:hover{background:#55bda8}body[data-theme="mint"] .post-tools form button{background:#55bda8}
 body[data-theme="lavender"]{background:#fcf9ff}body[data-theme="lavender"] .hero-card{background:linear-gradient(115deg,#fbf1ff,#f7efff 57%,#f0edff)}body[data-theme="lavender"] .brand-mark,body[data-theme="lavender"] .button-primary{background:linear-gradient(135deg,#b594e5,#dd83b3)}body[data-theme="lavender"] .hero-copy h1 em{color:#ae86d7}body[data-theme="lavender"] .tag-filter.active,body[data-theme="lavender"] .tag-filter:hover{background:#a98bd6}body[data-theme="lavender"] .post-tools form button{background:#a98bd6}
 .sakura-layer{position:fixed;inset:0;z-index:10;overflow:hidden;pointer-events:none}.sakura-petal{position:absolute;top:-28px;left:var(--left);width:var(--size);height:calc(var(--size) * .72);border-radius:80% 0 80% 0;background:linear-gradient(135deg,rgba(255,185,207,.95),rgba(255,126,171,.7));box-shadow:0 2px 5px rgba(229,113,153,.16);opacity:.78;transform:rotate(20deg);animation:sakura-fall var(--duration) linear var(--delay) infinite}.sakura-petal:nth-child(3n){background:linear-gradient(135deg,rgba(255,222,233,.95),rgba(244,144,178,.72));transform:scale(.78) rotate(55deg)}.sakura-petal:nth-child(4n){opacity:.55;transform:scale(1.2) rotate(-25deg)}@keyframes sakura-fall{0%{top:-35px;transform:translate3d(0,0,0) rotate(0deg)}35%{transform:translate3d(calc(var(--drift) * .35),35vh,0) rotate(calc(var(--spin) * .35))}70%{transform:translate3d(calc(var(--drift) * -.18),70vh,0) rotate(calc(var(--spin) * .72))}100%{top:calc(100vh + 40px);transform:translate3d(var(--drift),0,0) rotate(var(--spin))}}body:after{content:'';position:fixed;z-index:9;right:0;bottom:0;left:0;height:145px;pointer-events:none;background:linear-gradient(to bottom,rgba(255,249,251,0),rgba(255,225,237,.34));backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);mask-image:linear-gradient(to bottom,transparent 0%,black 62%);-webkit-mask-image:linear-gradient(to bottom,transparent 0%,black 62%)}body[data-theme="night"]:after{background:linear-gradient(to bottom,rgba(40,35,59,0),rgba(88,64,105,.4))}body[data-theme="mint"]:after{background:linear-gradient(to bottom,rgba(245,255,251,0),rgba(191,241,228,.35))}body[data-theme="lavender"]:after{background:linear-gradient(to bottom,rgba(252,249,255,0),rgba(225,211,249,.38))}@media(prefers-reduced-motion:reduce){.sakura-layer{display:none}}
+
+body.custom-wallpaper {
+  background-image: linear-gradient(rgba(255,249,251,.3),rgba(255,249,251,.3)),var(--custom-wallpaper-image);
+  background-position: center;
+  background-size: cover;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+body.custom-wallpaper .video-bg { opacity: 0 !important; }
+body.custom-wallpaper .video-overlay { background: rgba(40,35,59,.1); }
+body[data-theme="night"].custom-wallpaper {
+  background-image: linear-gradient(rgba(40,35,59,.45),rgba(40,35,59,.45)),var(--custom-wallpaper-image);
+}
+
+.site-settings {
+  margin-bottom: 22px;
+}
+.site-settings-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+.site-settings-form label {
+  display: grid;
+  gap: 6px;
+  color: #80647e;
+  font-size: 12px;
+  font-weight: 800;
+}
+.site-settings-form input {
+  width: 100%;
+  padding: 11px 13px;
+  color: var(--ink);
+  border: 1px solid #f3dfe8;
+  border-radius: 12px;
+  outline: none;
+  background: #fffafd;
+}
+.site-settings-form input:focus {
+  border-color: #eca0ba;
+  box-shadow: 0 0 0 3px rgba(239,127,165,.12);
+}
+.site-settings-form .editor-actions {
+  grid-column: 1 / -1;
+}
+@media (max-width: 540px) {
+  .site-settings-form {
+    grid-template-columns: 1fr;
+  }
+  .site-settings-form .editor-actions {
+    grid-column: auto;
+  }
+}

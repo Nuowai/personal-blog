@@ -9,10 +9,10 @@
 <body>
   <video class="video-bg" src="/bg-video.mp4" autoplay muted loop playsinline></video><div class="video-overlay"></div>
   <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
-  <header class="site-header"><a class="brand" href="/"><span class="brand-mark">🌸</span><span><strong>Sakura Note</strong><small>樱花汽水日记</small></span></a><nav class="top-nav"><a href="/">首页</a><a href="/#about">关于我</a><a href="/#guestbook">留言板</a><a id="auth-link" class="auth-link" href="/auth.html">登录 / 注册</a><a class="nav-admin" href="/admin.html">写文章<span>→</span></a></nav></header>
+  <header class="site-header"><a class="brand" href="/"><span class="brand-mark">🌸</span><span><strong>Sakura Note</strong><small>樱花汽水日记</small></span></a><nav class="top-nav"><a href="/" data-i18n="nav.home">首页</a><button class="locale-toggle" id="locale-toggle" type="button">English</button><a href="/#about" data-i18n="nav.about">关于我</a><a href="/#guestbook" data-i18n="nav.guestbook">留言板</a><a id="auth-link" class="auth-link" href="/auth.html">登录 / 注册</a><a class="nav-admin" href="/admin.html">写文章<span>→</span></a></nav></header>
   <aside class="location-widget" id="location-widget"><div class="location-title"><span>📍 我的位置</span><button id="location-refresh" type="button">↻</button></div><div id="amap-map" class="amap-map"><span>正在准备地图…</span></div><div id="location-info" class="location-info">正在定位附近城市…</div><div id="weather-info" class="weather-info">天气信息加载中…</div></aside>
-  <main class="article-shell"><a class="back-link" href="/">← 回到手帐首页</a><div id="article-root"><div class="loading-card">正在把这篇文章从抽屉里取出来 <span>…</span></div></div></main>
+  <main class="article-shell"><a class="back-link" href="/" data-i18n="nav.backHome">← 回到手帐首页</a><div id="article-root"><div class="loading-card">正在把这篇文章从抽屉里取出来 <span>…</span></div></div></main>
   <footer class="site-footer"><span>用一点点魔法和 SQLite 做成</span><span>© <span class="year"></span> Sakura Note</span></footer>
-  <script src="/sakura.js" defer></script><script src="/auth.js" defer></script><script src="/location.js" defer></script><script src="/post.js" defer></script>
+  <script src="/common.js" defer></script><script src="/sakura.js" defer></script><script src="/auth.js" defer></script><script src="/location.js" defer></script><script src="/post.js" defer></script>
 </body>
 </html>

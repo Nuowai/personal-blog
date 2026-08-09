@@ -7,6 +7,7 @@
 - 粉色二次元风格首页、文章详情页、留言板
 - SQLite 自动建库，首次启动自动写入示例文章
 - `/admin.html` 管理文章：新建、编辑、删除、发布/草稿、标签和封面
+- 管理员身份与网站外观设置：管理员名称/邮箱、网站标题、简介、标签图标和自定义壁纸
 - 媒体库支持图片、视频、音频上传；上传后可以一键插入正文
 - 4 套主题：樱花汽水、星夜紫、薄荷奶绿、薰衣草
 - 文章搜索、标签筛选、评论、留言板、RSS 和 sitemap
@@ -22,3 +23,9 @@ ADMIN_TOKEN=change-me npm start
 ```
 
 打开 `http://localhost:3000`，后台 `http://localhost:3000/admin.html`。
+
+管理员必须配置 `ADMIN_TOKEN`；默认管理员显示名是“糯歪”，可用 `ADMIN_NAME` 和 `ADMIN_EMAIL` 自定义。启用 Google 登录时，再配置 `GOOGLE_CLIENT_ID`。生产环境不要使用示例密钥。
+
+登录 `/admin.html` 后，在“网站外观”面板可以保存网站标题、简介、标签图标和壁纸。图标和壁纸支持上传媒体后填写 `/uploads/文件名`，也支持可信的 `https://` 地址。
+
+检查代码：`npm run check`；运行测试：`npm test`。

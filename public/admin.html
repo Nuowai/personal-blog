@@ -8,11 +8,22 @@
 <body>
   <video class="video-bg" src="/bg-video.mp4" autoplay muted loop playsinline></video><div class="video-overlay"></div>
   <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
-  <header class="site-header"><a class="brand" href="/"><span class="brand-mark">🌸</span><span><strong>Sakura Note</strong><small>樱花汽水日记</small></span></a><nav class="top-nav"><a href="/">回到首页</a></nav></header>
+  <header class="site-header"><a class="brand" href="/"><span class="brand-mark">🌸</span><span><strong>Sakura Note</strong><small>樱花汽水日记</small></span></a><nav class="top-nav"><a href="/" data-i18n="nav.backHome">回到首页</a><button class="locale-toggle" id="locale-toggle" type="button">English</button></nav></header>
   <main class="admin-shell">
     <section id="login-panel" class="admin-login mini-card"><span class="section-kicker">SECRET GARDEN</span><h1>进入写作小屋</h1><p>管理员密钥只保存在你的浏览器里，不会写进页面。</p><form id="login-form"><input id="admin-token" type="password" placeholder="输入 ADMIN_TOKEN" required><button class="button button-primary" type="submit">进入小屋 <span>→</span></button><div class="form-hint" id="login-hint"></div></form></section>
     <section id="editor-panel" hidden>
       <div class="admin-toolbar mini-card"><div><span class="section-kicker">CONTROL ROOM</span><h1>博客控制台</h1></div><div class="toolbar-actions"><label>默认主题<select id="theme-select"><option value="sakura">樱花汽水</option><option value="night">星夜紫</option><option value="mint">薄荷奶绿</option><option value="lavender">薰衣草</option></select></label><button class="button button-primary" id="save-theme" type="button">保存主题</button><button class="button button-quiet" id="logout-button" type="button">退出</button></div></div>
+      <section class="site-settings mini-card">
+        <div class="card-title-row"><div><span class="section-kicker">SITE SETTINGS</span><h2>网站外观</h2></div><span class="tiny-icon">🎨</span></div>
+        <p class="side-help">管理员：<strong id="admin-identity">糯歪</strong>。修改后会应用到首页和文章页。</p>
+        <form id="site-settings-form" class="site-settings-form">
+          <label>网站标题<input id="site-title" maxlength="80" placeholder="Sakura Note · 樱花汽水日记"></label>
+          <label>网站简介<input id="site-description" maxlength="200" placeholder="一个软萌的个人博客。"></label>
+          <label>标签图标 URL<input id="favicon-url" type="url" maxlength="1000" placeholder="/uploads/favicon.png"></label>
+          <label>壁纸 URL<input id="wallpaper-url" type="url" maxlength="1000" placeholder="/uploads/wallpaper.jpg"></label>
+          <div class="editor-actions"><button class="button button-primary" type="submit">保存网站设置 <span>✨</span></button><div class="form-hint" id="site-settings-hint"></div></div>
+        </form>
+      </section>
       <div class="editor-layout">
         <div class="editor-main mini-card"><div class="section-heading"><div><span class="section-kicker">WRITE / EDIT / PUBLISH</span><h1 id="editor-title">写一篇新文章</h1></div></div>
           <form id="post-form" class="post-form"><input type="hidden" id="post-id"><label>标题<input id="title" required maxlength="100" placeholder="给今天起一个温柔的名字"></label><div class="form-row"><label>分类<input id="category" maxlength="30" value="日常"></label><label>封面表情<input id="cover-emoji" maxlength="8" value="🌸"></label></div><label>标签 <span class="label-note">用逗号分隔</span><input id="tags" maxlength="160" placeholder="生活,随笔,治愈"></label><label>封面图片 URL <span class="label-note">可从右侧媒体库插入</span><input id="cover-image" placeholder="/uploads/your-cover.jpg"></label><label>摘要<textarea id="excerpt" rows="2" maxlength="180" placeholder="在首页展示的一小段预告"></textarea></label><label>正文 <span class="label-note">支持 Markdown；上传视频后可插入播放器</span><textarea id="content" rows="17" required placeholder="# 今天也很不错&#10;&#10;写下你的故事吧～"></textarea></label><label class="check-label"><input id="published" type="checkbox" checked> 立即公开这篇文章（取消即保存为草稿）</label><div class="editor-actions"><button class="button button-primary" type="submit">保存文章 <span>✨</span></button><button class="button button-quiet" id="clear-button" type="button">清空编辑器</button><div class="form-hint" id="editor-hint"></div></div></form>
@@ -21,6 +32,6 @@
       </div>
     </section>
   </main>
-  <script src="/sakura.js" defer></script><script src="/admin.js" defer></script>
+  <script src="/common.js" defer></script><script src="/sakura.js" defer></script><script src="/admin.js" defer></script>
 </body>
 </html>
