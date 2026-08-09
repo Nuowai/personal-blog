@@ -4,7 +4,7 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 const multer = require('multer');
 const { AppError, asyncHandler } = require('../http');
-const { text } = require('../validation);
+const { text } = require('../validation');
 const { safeEqual } = require('../security');
 
 function createAdminRouter({ db, config }) {
