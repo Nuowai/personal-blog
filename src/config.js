@@ -7,6 +7,8 @@ module.exports = Object.freeze({
   port: Number(process.env.PORT || 3000),
   nodeEnv: process.env.NODE_ENV || 'development',
   adminToken: process.env.ADMIN_TOKEN || '',
+  adminName: process.env.ADMIN_NAME || '糯歪',
+  adminEmail: process.env.ADMIN_EMAIL || '',
   googleClientId: process.env.GOOGLE_CLIENT_ID || '',
   amapJsKey: process.env.AMAP_JS_KEY || '',
   amapSecurityCode: process.env.AMAP_SECURITY_CODE || '',
