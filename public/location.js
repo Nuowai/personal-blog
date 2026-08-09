@@ -27,7 +27,7 @@ async function loadWeather(city = currentCity) {
     if (data.code && data.code !== '1') throw new Error(data.info || '天气查询失败');
     const weather = data.lives?.[0];
     setWeatherText(weather ? `${weather.city} · ${weather.weather} · ${weather.temperature}℃ · ${weather.winddirection}${weather.windpower}级` : t('weather.notConfigured'));
-  } catch (error) { setWeatherText(errorMessage(error, 'weather.notConfigured')); }
+  } catch (error) { setWeatherText(errorMessage(error, 'weather.failed')); }
 }
 async function initMap() {
   if (!widget) return;
@@ -53,7 +53,7 @@ async function initMap() {
         loadWeather();
       }
     });
-  } catch (error) { setLocationText(errorMessage(error, 'location.notConfigured')); loadWeather(); }
+  } catch (error) { setLocationText(errorMessage(error, 'location.scriptFailed')); loadWeather(); }
 }
 $('#location-refresh')?.addEventListener('click', initMap);
 window.addEventListener('sakura:locale-change', () => { if (map) loadWeather(currentCity); else { setLocationText(t('location.notConfigured')); setWeatherText(t('weather.notConfigured')); } });
