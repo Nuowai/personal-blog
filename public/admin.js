@@ -20,7 +20,7 @@ async function verifyToken() {
   catch (error) { sessionStorage.removeItem(TOKEN_KEY); showLogin(); if (error.status !== 401) setHint('#login-hint', errorMessage(error), true); }
 }
 function renderAdminPosts() {
-  $('#admin-post-list').innerHTML = posts.length ? posts.map((post) => `<div class="admin-post-item" data-id="${post.id}"><span class="post-mini-emoji">${escapeHtml(post.cover_emoji)}</span><strong>${escapeHtml(post.title)}<small>${post.published ? '已发布' : '草稿'}</small></strong><button data-action="edit" type="button">编辑</button><button data-action="delete" type="button">删</button></div>`).join('') : '<div class="admin-empty">文章抽屉还是空的～</div>';
+  $('#admin-post-list').innerHTML = posts.length ? posts.map((post) => `<div class="admin-post-item" data-id="${post.id}"><span class="post-mini-emoji">${escapeHtml(post.cover_emoji)}</span><strong>${escapeHtml(post.title)}<small>${post.published ? t('admin.published') : t('admin.draft')}</small></strong><button data-action="edit" type="button">${t('admin.edit')}</button><button data-action="delete" type="button">${t('admin.delete')}</button></div>`).join('') : '<div class="admin-empty">文章抽屉还是空的～</div>';
 }
 function formatSize(size) {
   const bytes = Number(size) || 0;
@@ -35,11 +35,11 @@ function renderMedia() {
 }
 async function loadAdminPosts() {
   try { posts = (await api('/api/admin/posts')).posts; renderAdminPosts(); }
-  catch (error) { setHint('#editor-hint', error.message, true); }
+  catch (error) { setHint('#editor-hint', errorMessage(error), true); }
 }
 async function loadMedia() {
   try { media = (await api('/api/media')).media; renderMedia(); }
-  catch (error) { setHint('#media-hint', error.message, true); }
+  catch (error) { setHint('#media-hint', errorMessage(error), true); }
 }
 async function loadSettings() {
   try {
@@ -93,7 +93,7 @@ $('#login-form').addEventListener('submit', async (event) => {
   sessionStorage.setItem(TOKEN_KEY, value);
   setHint('#login-hint', t('common.loading'));
   try { await api('/api/auth/admin-check'); showEditor(); }
-  catch (error) { sessionStorage.removeItem(TOKEN_KEY); setHint('#login-hint', error.message || t('admin.invalidToken'), true); }
+  catch (error) { sessionStorage.removeItem(TOKEN_KEY); setHint('#login-hint', errorMessage(error, 'admin.invalidToken'), true); }
 });
 $('#logout-button').addEventListener('click', () => { sessionStorage.removeItem(TOKEN_KEY); showLogin(); });
 $('#clear-button').addEventListener('click', resetEditor);
@@ -103,31 +103,31 @@ $('#post-form').addEventListener('submit', async (event) => {
   const id = $('#post-id').value;
   const payload = { title: $('#title').value, category: $('#category').value, tags: $('#tags').value, cover_emoji: $('#cover-emoji').value, cover_image: $('#cover-image').value, excerpt: $('#excerpt').value, content: $('#content').value, published: $('#published').checked };
   try { await api(id ? `/api/posts/${id}` : '/api/posts', { method: id ? 'PUT' : 'POST', body: JSON.stringify(payload) }); setHint('#editor-hint', t('admin.saved')); resetEditor(); await loadAdminPosts(); }
-  catch (error) { setHint('#editor-hint', error.message, true); }
+  catch (error) { setHint('#editor-hint', errorMessage(error), true); }
 });
 $('#upload-media').addEventListener('click', async () => {
   const file = $('#media-file').files[0];
-  if (!file) return setHint('#media-hint', '先选择一个文件哦～', true);
+  if (!file) return setHint('#media-hint', t('admin.chooseFile'), true);
   const form = new FormData(); form.append('file', file); setHint('#media-hint', t('common.loading'));
   try { await api('/api/media', { method: 'POST', body: form }); $('#media-file').value = ''; setHint('#media-hint', t('admin.uploaded')); await loadMedia(); }
-  catch (error) { setHint('#media-hint', error.message, true); }
+  catch (error) { setHint('#media-hint', errorMessage(error), true); }
 });
 $('#media-list').addEventListener('click', async (event) => {
   const button = event.target.closest('button'); if (!button) return;
   const item = media.find((entry) => String(entry.id) === button.dataset.id); if (!item) return;
   if (button.dataset.mediaAction === 'insert') return insertMedia(item);
-  if (button.dataset.mediaAction === 'delete' && confirm(`确定删除「${item.name}」吗？`)) {
+  if (button.dataset.mediaAction === 'delete' && confirm(t('admin.confirmDeleteMedia', { name: item.name }))) {
     try { await api(`/api/media/${item.id}`, { method: 'DELETE' }); await loadMedia(); setHint('#media-hint', t('admin.deleted')); }
-    catch (error) { setHint('#media-hint', error.message, true); }
+    catch (error) { setHint('#media-hint', errorMessage(error), true); }
   }
 });
 $('#admin-post-list').addEventListener('click', async (event) => {
   const item = event.target.closest('.admin-post-item'); if (!item) return;
   const post = posts.find((entry) => String(entry.id) === item.dataset.id); if (!post) return;
   if (event.target.dataset.action === 'edit') return editPost(post);
-  if (event.target.dataset.action === 'delete' && confirm(`确定要删除「${post.title}」吗？`)) {
+  if (event.target.dataset.action === 'delete' && confirm(t('admin.confirmDeletePost', { name: post.title }))) {
     try { await api(`/api/posts/${post.id}`, { method: 'DELETE' }); await loadAdminPosts(); setHint('#editor-hint', t('admin.deleted')); }
-    catch (error) { setHint('#editor-hint', error.message, true); }
+    catch (error) { setHint('#editor-hint', errorMessage(error), true); }
   }
 });
 async function saveSiteSettings() {
@@ -146,7 +146,7 @@ async function saveSiteSettings() {
     localStorage.setItem('sakura-note-theme', saved.theme || $('#theme-select').value);
     setHint('#site-settings-hint', t('admin.saved'));
   } catch (error) {
-    setHint('#site-settings-hint', error.message, true);
+    setHint('#site-settings-hint', errorMessage(error), true);
   }
 }
 $('#site-settings-form')?.addEventListener('submit', async (event) => {
