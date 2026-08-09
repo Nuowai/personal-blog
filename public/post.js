@@ -1,4 +1,4 @@
-const { $, t, escapeHtml, formatDate, request, setHint, initLocale } = window.Sakura;
+const { $, t, escapeHtml, formatDate, request, setHint } = window.Sakura;
 const params = new URLSearchParams(location.search);
 const slug = params.get('slug');
 const root = $('#article-root');
@@ -46,6 +46,5 @@ async function loadArticle() {
   }
 }
 
-initLocale();
 document.querySelector('.year')?.replaceChildren(String(new Date().getFullYear()));
 loadArticle();
