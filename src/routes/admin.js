@@ -63,7 +63,7 @@ function createAdminRouter({ db, config }) {
   function assetUrl(value, field) {
     const raw = String(value ?? '').trim();
     if (!raw) return '';
-    if (raw.startsWith('/') && !raw.startsWith('//') && !/[<>"'\\s]/.test(raw)) return raw;
+    if (raw.startsWith('/') && !raw.startsWith('//') && !/[<>"'\s]/.test(raw)) return raw;
     try {
       const parsed = new URL(raw);
       if (!['http:', 'https:'].includes(parsed.protocol)) throw new Error('protocol');
