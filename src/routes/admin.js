@@ -4,6 +4,7 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 const multer = require('multer');
 const { AppError, asyncHandler } = require('../http');
+const { text } = require('../validation);
 const { safeEqual } = require('../security');
 
 function createAdminRouter({ db, config }) {
@@ -69,6 +70,7 @@ function createAdminRouter({ db, config }) {
   }
 
   function assetUrl(value, field) {
+    if (value !== undefined && value !== null && typeof value !== 'string') throw new AppError(400, 'INVALID_SETTING', `${field}必须是字符串`);
     const raw = String(value ?? '').trim();
     if (!raw) return '';
     if (raw.startsWith('/') && !raw.startsWith('//') && !/[<>"'\s]/.test(raw)) return raw;
@@ -87,16 +89,20 @@ function createAdminRouter({ db, config }) {
 
   router.put('/settings', requireAdmin, asyncHandler(async (req, res) => {
     const body = req.body || {};
+    const allowedKeys = new Set(['theme', 'faviconUrl', 'wallpaperUrl', 'siteTitle', 'siteDescription']);
+    const unknownKeys = Object.keys(body).filter((key) => !allowedKeys.has(key));
+    if (unknownKeys.length) throw new AppError(400, 'INVALID_SETTING', `不支持的网站设置：${unknownKeys.join(', ')}`);
     const updates = [];
     if (Object.prototype.hasOwnProperty.call(body, 'theme')) {
-      const theme = String(body.theme || '');
+      const theme = body.theme;
+      if (typeof theme !== 'string') throw new AppError(400, 'INVALID_SETTING', '主题必须是字符串');
       if (!['sakura', 'night', 'mint', 'lavender'].includes(theme)) throw new AppError(400, 'INVALID_THEME', '主题无效');
       updates.push(['theme', theme]);
     }
     if (Object.prototype.hasOwnProperty.call(body, 'faviconUrl')) updates.push(['favicon_url', assetUrl(body.faviconUrl, '网站图标地址')]);
     if (Object.prototype.hasOwnProperty.call(body, 'wallpaperUrl')) updates.push(['wallpaper_url', assetUrl(body.wallpaperUrl, '壁纸地址')]);
-    if (Object.prototype.hasOwnProperty.call(body, 'siteTitle')) updates.push(['site_title', String(body.siteTitle || '').trim().slice(0, 80)]);
-    if (Object.prototype.hasOwnProperty.call(body, 'siteDescription')) updates.push(['site_description', String(body.siteDescription || '').trim().slice(0, 200)]);
+    if (Object.prototype.hasOwnProperty.call(body, 'siteTitle')) updates.push(['site_title', text(body.siteTitle, '网站标题', { max: 80 })]);
+    if (Object.prototype.hasOwnProperty.call(body, 'siteDescription')) updates.push(['site_description', text(body.siteDescription, '网站简介', { max: 200 })]);
     const save = db.prepare('INSERT OR REPLACE INTO site_settings (key, value) VALUES (?, ?)');
     db.exec('BEGIN');
     try {
