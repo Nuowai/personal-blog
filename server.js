@@ -195,7 +195,7 @@ app.post('/api/auth/google', async (req, res) => {
     const tokenRes = await fetch('https://oauth2.googleapis.com/tokeninfo?id_token=' + encodeURIComponent(String(req.body?.credential || '')));
     if (!tokenRes.ok) throw new Error('token verification failed');
     const payload = await tokenRes.json();
-    if (!payload?.sub || !payload.email) return res.status(400).json({ error: 'Google 登录信息不完整' });
+    if (!payload?.sub || !payload.email || payload.aud !== GOOGLE_CLIENT_ID || payload.email_verified !== 'true') return res.status(400).json({ error: 'Google 登录信息无效' });
     let user = db.prepare('SELECT id, email, name, provider FROM users WHERE email = ?').get(payload.email);
     if (!user) {
       const result = db.prepare('INSERT INTO users (email, name, provider, google_sub) VALUES (?, ?, \'google\', ?)').run(payload.email, payload.name || payload.email.split('@')[0], payload.sub);
