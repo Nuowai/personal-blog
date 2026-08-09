@@ -1,4 +1,4 @@
-const { $, t, request, setHint, initLocale } = window.Sakura;
+const { $, t, request, setHint } = window.Sakura;
 const widget = $('#location-widget');
 let map;
 let currentCity = '110000';
@@ -48,5 +48,4 @@ async function initMap() {
 }
 $('#location-refresh')?.addEventListener('click', initMap);
 window.addEventListener('sakura:locale-change', () => { if (!map) { setLocationText(t('location.notConfigured')); setWeatherText(t('weather.notConfigured')); } });
-initLocale();
 initMap();
