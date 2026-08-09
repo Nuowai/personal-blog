@@ -1,4 +1,4 @@
-const { $, t, escapeHtml, safeUrl, formatDate, request, setHint, initLocale, getLocale } = window.Sakura;
+const { $, t, escapeHtml, safeUrl, formatDate, request, setHint } = window.Sakura;
 let activeTag = '';
 let searchTimer;
 let postsController;
@@ -108,7 +108,6 @@ function initDeepSeekChat() {
 }
 
 function initHome() {
-  initLocale();
   $('#theme-toggle')?.addEventListener('click', () => applyTheme(themes[(themes.indexOf(document.body.dataset.theme) + 1) % themes.length]));
   $('#search-form')?.addEventListener('submit', (event) => { event.preventDefault(); activeTag = ''; loadPosts().catch((error) => setHint('#post-list', error.message, true)); });
   $('#search-input')?.addEventListener('input', () => { clearTimeout(searchTimer); searchTimer = setTimeout(() => loadPosts().catch((error) => setHint('#post-list', error.message, true)), 300); });
