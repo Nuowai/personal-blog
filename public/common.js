@@ -120,6 +120,7 @@
     $('[data-i18n-placeholder]').forEach((node) => { node.placeholder = t(node.dataset.i18nPlaceholder); });
   }
   function applySiteSettings(settings = {}) {
+    if (settings.theme) document.body.dataset.theme = settings.theme;
     const iconUrl = safeUrl(settings.faviconUrl);
     let icon = document.querySelector('link[rel="icon"]');
     if (!icon) {
