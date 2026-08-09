@@ -92,7 +92,7 @@ $('#login-form').addEventListener('submit', async (event) => {
   const value = $('#admin-token').value.trim();
   sessionStorage.setItem(TOKEN_KEY, value);
   setHint('#login-hint', t('common.loading'));
-  try { await api('/api/auth/admin-check'); showEditor(); }
+  try { const result = await api('/api/auth/admin-check'); adminIdentity = result.admin || {}; await showEditor(); }
   catch (error) { sessionStorage.removeItem(TOKEN_KEY); setHint('#login-hint', errorMessage(error, 'admin.invalidToken'), true); }
 });
 $('#logout-button').addEventListener('click', () => { sessionStorage.removeItem(TOKEN_KEY); showLogin(); });
