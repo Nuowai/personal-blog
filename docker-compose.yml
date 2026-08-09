@@ -1,0 +1,13 @@
+services:
+  sakura-note:
+    build: .
+    container_name: sakura-note
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      ADMIN_TOKEN: change-me-before-deploy
+    volumes:
+      - ./data:/app/data
+      - ./uploads:/app/uploads
