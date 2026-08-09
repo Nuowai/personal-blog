@@ -43,7 +43,7 @@ function errorHandler(error, req, res, next) {
   const isUploadTooLarge = error?.code === 'LIMIT_FILE_SIZE';
   const status = known ? error.status : isUploadTooLarge ? 413 : error.statusCode >= 400 && error.statusCode < 600 ? error.statusCode : 500;
   const code = known ? error.code : isUploadTooLarge ? 'MEDIA_TOO_LARGE' : 'INTERNAL_ERROR';
-  if (!known) console.error(error);
+  if (!known) console.error({ requestId: req.requestId, method: req.method, path: req.path, error });
   const message = known ? error.message : isUploadTooLarge ? '媒体文件超过大小限制' : '服务器内部错误';
   res.status(status).json({ error: message, code, details: known ? error.details : undefined });
 }
