@@ -15,14 +15,13 @@ function createPostsRouter({ db, config }) {
 
   function uniqueSlug(title, exceptId = null) {
     const base = makeSlug(title);
+    const rows = db.prepare('SELECT slug FROM posts WHERE (slug = ? OR slug LIKE ?) AND (? IS NULL OR id != ?)').all(base, `${base}-%`, exceptId, exceptId);
+    const used = new Set(rows.map((row) => row.slug));
     let slug = base;
     let suffix = 2;
-    while (db.prepare('SELECT id FROM posts WHERE slug = ? AND (? IS NULL OR id != ?)').get(slug, exceptId, exceptId)) {
-      slug = `${base}-${suffix++}`;
-    }
+    while (used.has(slug)) slug = `${base}-${suffix++}`;
     return slug;
   }
-
   function getPostBySlug(slug, { includeDraft = false } = {}) {
     const where = includeDraft ? 'slug = ?' : 'slug = ? AND published = 1';
     return db.prepare(`SELECT ${publicPostFields}${includeDraft ? ', content' : ''} FROM posts WHERE ${where}`).get(slug);
@@ -53,9 +52,15 @@ function createPostsRouter({ db, config }) {
   }));
 
   router.get('/admin/posts', requireAdmin, asyncHandler(async (req, res) => {
-    const posts = db.prepare(`SELECT ${publicPostFields}, content FROM posts ORDER BY datetime(created_at) DESC`).all()
-      .map((row) => formatPost(row, { includeContent: true }));
+    const posts = db.prepare(`SELECT ${publicPostFields} FROM posts ORDER BY datetime(created_at) DESC`).all()
+      .map((row) => formatPost(row));
     res.json({ posts });
+  }));
+
+  router.get('/admin/posts/:id', requireAdmin, asyncHandler(async (req, res) => {
+    const post = db.prepare(`SELECT ${publicPostFields}, content FROM posts WHERE id = ?`).get(req.params.id);
+    if (!post) throw new AppError(404, 'POST_NOT_FOUND', '文章没有找到');
+    res.json({ post: formatPost(post, { includeContent: true }) });
   }));
 
   router.post('/posts', requireAdmin, asyncHandler(async (req, res) => {
