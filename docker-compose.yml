@@ -9,6 +9,8 @@ services:
       PORT: 3000
       ADMIN_TOKEN: ${ADMIN_TOKEN:?请先设置 ADMIN_TOKEN}
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      ADMIN_NAME: ${ADMIN_NAME:-糯歪}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-}
     volumes:
       - ./data:/app/data
       - ./uploads:/app/uploads
