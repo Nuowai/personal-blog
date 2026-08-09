@@ -5,7 +5,9 @@ const { createAuthRouter } = require('./routes/auth');
 const { createPostsRouter } = require('./routes/posts');
 const { createCommunityRouter } = require('./routes/community');
 const { createAdminRouter } = require('./routes/admin');
-const { createIntegrationsRouter } = require('./routes/integrations');
+const { createAiRouter } = require('./routes/ai');
+const { createLocationRouter } = require('./routes/location');
+const { createFeedRouter } = require('./routes/feeds');
 
 function createApp({ db, config }) {
   const app = express();
@@ -18,9 +20,9 @@ function createApp({ db, config }) {
   app.use('/api', createPostsRouter({ db, config }));
   app.use('/api', createCommunityRouter({ db }));
   app.use('/api', createAdminRouter({ db, config }));
-  const integrations = createIntegrationsRouter({ db, config });
-  app.use('/api', integrations.apiRouter);
-  app.use('/', integrations.publicRouter);
+  app.use('/api', createAiRouter({ config }));
+  app.use('/api', createLocationRouter({ config }));
+  app.use('/', createFeedRouter({ db }));
 
   app.get('/health', (req, res) => res.json({ ok: true, service: 'sakura-note' }));
   app.use(notFound);
