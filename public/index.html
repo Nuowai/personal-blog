@@ -21,10 +21,10 @@
       <span><strong>Sakura Note</strong><small>樱花汽水日记</small></span>
     </a>
     <nav class="top-nav">
-      <a class="active" href="#home">首页</a>
-      <a href="#about">关于我</a>
-      <a href="#guestbook">留言板</a>
-      <button class="theme-switcher" id="theme-toggle" type="button" title="切换主题">🌸</button><button class="locale-toggle" id="locale-toggle" type="button">English</button><a id="auth-link" class="auth-link" href="/auth.html">登录 / 注册</a><a class="nav-admin" href="/admin.html">写文章<span>→</span></a>
+      <a class="active" href="#home" data-i18n="nav.home">首页</a>
+      <a href="#about" data-i18n="nav.about">关于我</a>
+      <a href="#guestbook" data-i18n="nav.guestbook">留言板</a>
+      <button class="theme-switcher" id="theme-toggle" type="button" title="切换主题">🌸</button><button class="locale-toggle" id="locale-toggle" type="button">English</button><a id="auth-link" class="auth-link" href="/auth.html">登录 / 注册</a><a class="nav-admin" href="/admin.html"><span data-i18n="nav.write">写文章</span><span>→</span></a>
     </nav>
   </header>
   <aside class="location-widget" id="location-widget"><div class="location-title"><span>📍 我的位置</span><button id="location-refresh" type="button">↻</button></div><div id="amap-map" class="amap-map"><span>正在准备地图…</span></div><div id="location-info" class="location-info">正在定位附近城市…</div><div id="weather-info" class="weather-info">天气信息加载中…</div></aside>
@@ -32,9 +32,9 @@
   <main class="page-shell" id="home">
     <section class="hero-card">
       <div class="hero-copy">
-        <div class="eyebrow"><span class="status-dot"></span> 正在和世界交换一点点温柔</div>
-        <h1>你好呀，<br><em>欢迎来到我的小宇宙。</em></h1>
-        <p>这里收藏生活碎片、技术折腾和那些悄悄发光的瞬间。愿你路过时，刚好被一阵樱花风吹到。</p>
+        <div class="eyebrow"><span class="status-dot"></span> <span data-i18n="home.eyebrow">正在和世界交换一点点温柔</span></div>
+        <h1 data-i18n-html="home.heroTitle">你好呀，<br><em>欢迎来到我的小宇宙。</em></h1>
+        <p data-i18n="home.heroDescription">这里收藏生活碎片、技术折腾和那些悄悄发光的瞬间。愿你路过时，刚好被一阵樱花风吹到。</p>
         <div class="hero-actions">
           <a class="button button-primary" href="#notes">逛逛手帐<span>→</span></a>
           <a class="button button-quiet" href="#about">认识一下<span>♡</span></a>
@@ -53,28 +53,28 @@
     <div class="content-grid">
       <section class="notes-column" id="notes">
         <div class="section-heading">
-          <div><span class="section-kicker">MY LITTLE NOTES</span><h2>最近写了什么</h2></div>
+          <div><span class="section-kicker">MY LITTLE NOTES</span><h2 data-i18n="home.recent">最近写了什么</h2></div>
           <span class="count-pill" id="post-count">0 篇记录</span>
         </div>
-        <div class="post-tools"><form id="search-form"><input id="search-input" placeholder="搜索文章、标签或关键词…"><button type="submit">⌕</button></form><div id="tag-filters" class="tag-filters"></div></div>
+        <div class="post-tools"><form id="search-form"><input id="search-input" data-i18n-placeholder="home.searchPlaceholder" placeholder="搜索文章、标签或关键词…"><button type="submit">⌕</button></form><div id="tag-filters" class="tag-filters"></div></div>
         <div id="post-list" class="post-list"><div class="loading-card">正在翻开手帐本<span>…</span></div></div>
       </section>
 
       <aside class="side-column">
         <section class="mini-card profile-card" id="about">
           <div class="avatar">🌸</div>
-          <span class="section-kicker">A LITTLE ABOUT ME</span>
-          <h3>小樱 / Sakura</h3>
-          <p>会写代码，也会在下午三点认真吃一块小蛋糕。喜欢把复杂的事情变简单，把普通的日子过得有一点可爱。</p>
+          <span class="section-kicker" data-i18n="home.aboutKicker">A LITTLE ABOUT ME</span>
+          <h3 data-i18n="home.aboutTitle">小樱 / Sakura</h3>
+          <p data-i18n="home.aboutText">会写代码，也会在下午三点认真吃一块小蛋糕。喜欢把复杂的事情变简单，把普通的日子过得有一点可爱。</p>
           <div class="tag-row"><span>#独立开发</span><span>#生活观察员</span><span>#猫派</span></div>
         </section>
 
         <section class="mini-card guest-card" id="guestbook">
-          <div class="card-title-row"><div><span class="section-kicker">SAY HELLO</span><h3>留下一个脚印</h3></div><span class="tiny-icon">♡</span></div>
-          <p>路过的话，和我说句话吧～</p>
+          <div class="card-title-row"><div><span class="section-kicker" data-i18n="home.guestKicker">SAY HELLO</span><h3 data-i18n="home.guestTitle">留下一个脚印</h3></div><span class="tiny-icon">♡</span></div>
+          <p data-i18n="home.guestText">路过的话，和我说句话吧～</p>
           <form id="guestbook-form" class="guest-form">
-            <input name="nickname" maxlength="30" placeholder="你的昵称" required>
-            <textarea name="message" maxlength="240" rows="3" placeholder="想说些什么呢？" required></textarea>
+            <input name="nickname" data-i18n-placeholder="home.nickname" maxlength="30" placeholder="你的昵称" required>
+            <textarea name="message" data-i18n-placeholder="home.message" maxlength="240" rows="3" placeholder="想说些什么呢？" required></textarea>
             <button class="button button-primary" type="submit">发送留言 <span>✨</span></button>
             <div class="form-hint" id="guestbook-hint"></div>
           </form>
@@ -86,7 +86,7 @@
   <footer class="site-footer"><span>用一点点魔法和 SQLite 做成</span><span>© <span id="year"></span> Sakura Note · keep blooming ✨</span></footer>
   <button class="ai-fab" id="ai-open" aria-label="打开 DeepSeek 小助手">✨</button>
   <section class="ai-panel" id="ai-panel" hidden aria-label="DeepSeek 对话窗口">
-    <div class="ai-head"><div><strong>DeepSeek 小助手</strong><small>输入你自己的 API Key 即可开始聊天</small></div><button class="ai-close" id="ai-close" type="button">×</button></div>
+    <div class="ai-head"><div><strong data-i18n="home.aiTitle">DeepSeek 小助手</strong><small>输入你自己的 API Key 即可开始聊天</small></div><button class="ai-close" id="ai-close" type="button">×</button></div>
     <div class="ai-settings"><input id="ai-key" type="password" autocomplete="off" placeholder="DeepSeek API Key（仅保存在本机）"><div class="ai-settings-row"><select id="ai-model"><option value="deepseek-chat">deepseek-chat</option><option value="deepseek-reasoner">deepseek-reasoner</option></select><span class="ai-note">Key 保存在本机，仅随对话转发，不写入本站数据库。</span></div></div>
     <div class="ai-chat" id="ai-chat"><div class="ai-bubble">嗯～我是博客里的小助手。填好 API Key 后，想聊点什么都可以呀 ✨</div></div>
     <form class="ai-input" id="ai-form"><textarea id="ai-message" rows="2" placeholder="和小助手说点什么…" required></textarea><button id="ai-send" type="submit" aria-label="发送">→</button></form>
