@@ -74,7 +74,7 @@ function createAuthRouter({ db, config }) {
     const provided = String(req.headers['x-admin-token'] || '');
     if (!config.adminToken) throw new AppError(503, 'ADMIN_NOT_CONFIGURED', '站点尚未配置管理员密钥');
     if (!safeEqual(provided, config.adminToken)) throw new AppError(401, 'ADMIN_UNAUTHORIZED', '管理员密钥不正确');
-    res.json({ ok: true });
+    res.json({ ok: true, admin: { name: config.adminName, email: config.adminEmail } });
   });
 
   return router;
