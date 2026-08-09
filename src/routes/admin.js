@@ -22,7 +22,13 @@ function createAdminRouter({ db, config }) {
   const upload = multer({
     storage,
     limits: { fileSize: 200 * 1024 * 1024 },
-    fileFilter: (req, file, cb) => cb(null, allowedMimes.has(file.mimetype) && allowedExtensions.has(path.extname(file.originalname).toLowerCase()))
+    fileFilter: (req, file, cb) => {
+      const extension = path.extname(file.originalname).toLowerCase();
+      if (!allowedMimes.has(file.mimetype) || !allowedExtensions.has(extension)) {
+        return cb(new AppError(415, 'MEDIA_TYPE_NOT_ALLOWED', '媒体类型或扩展名不受支持'));
+      }
+      cb(null, true);
+    }
   });
 
   router.post('/media', requireAdmin, upload.single('file'), asyncHandler(async (req, res) => {
@@ -41,7 +47,9 @@ function createAdminRouter({ db, config }) {
   router.delete('/media/:id', requireAdmin, asyncHandler(async (req, res) => {
     const media = db.prepare('SELECT filename FROM media WHERE id = ?').get(req.params.id);
     if (!media) throw new AppError(404, 'MEDIA_NOT_FOUND', '媒体文件没有找到');
-    const filePath = path.join(config.uploadDir, media.filename);
+    const uploadRoot = path.resolve(config.uploadDir);
+    const filePath = path.resolve(uploadRoot, media.filename);
+    if (!filePath.startsWith(`${uploadRoot}${path.sep}`)) throw new AppError(400, 'INVALID_MEDIA_PATH', '媒体路径无效');
     if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
     db.prepare('DELETE FROM media WHERE id = ?').run(req.params.id);
     res.status(204).end();
