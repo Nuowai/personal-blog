@@ -47,17 +47,58 @@ function createAdminRouter({ db, config }) {
     res.status(204).end();
   }));
 
-  router.get('/settings', asyncHandler(async (req, res) => {
+  function readSettings() {
     const rows = db.prepare('SELECT key, value FROM site_settings').all();
-    const settings = Object.fromEntries(rows.map((row) => [row.key, row.value]));
-    res.json({ theme: settings.theme || 'sakura' });
+    const values = Object.fromEntries(rows.map((row) => [row.key, row.value]));
+    return {
+      theme: values.theme || 'sakura',
+      faviconUrl: values.favicon_url || '',
+      wallpaperUrl: values.wallpaper_url || '',
+      siteTitle: values.site_title || 'Sakura Note · 樱花汽水日记',
+      siteDescription: values.site_description || '一个软萌的个人博客。',
+      admin: { name: config.adminName, email: config.adminEmail }
+    };
+  }
+
+  function assetUrl(value, field) {
+    const raw = String(value ?? '').trim();
+    if (!raw) return '';
+    if (raw.startsWith('/') && !raw.startsWith('//') && !/[<>"'\\s]/.test(raw)) return raw;
+    try {
+      const parsed = new URL(raw);
+      if (!['http:', 'https:'].includes(parsed.protocol)) throw new Error('protocol');
+      return parsed.href;
+    } catch {
+      throw new AppError(400, 'INVALID_SETTING', `${field}必须是 http(s) 或站内路径`);
+    }
+  }
+
+  router.get('/settings', asyncHandler(async (req, res) => {
+    res.json(readSettings());
   }));
 
   router.put('/settings', requireAdmin, asyncHandler(async (req, res) => {
-    const theme = String(req.body?.theme || '');
-    if (!['sakura', 'night', 'mint', 'lavender'].includes(theme)) throw new AppError(400, 'INVALID_THEME', '主题无效');
-    db.prepare('INSERT OR REPLACE INTO site_settings (key, value) VALUES (\'theme\', ?)').run(theme);
-    res.json({ ok: true, theme });
+    const body = req.body || {};
+    const updates = [];
+    if (Object.prototype.hasOwnProperty.call(body, 'theme')) {
+      const theme = String(body.theme || '');
+      if (!['sakura', 'night', 'mint', 'lavender'].includes(theme)) throw new AppError(400, 'INVALID_THEME', '主题无效');
+      updates.push(['theme', theme]);
+    }
+    if (Object.prototype.hasOwnProperty.call(body, 'faviconUrl')) updates.push(['favicon_url', assetUrl(body.faviconUrl, '网站图标地址')]);
+    if (Object.prototype.hasOwnProperty.call(body, 'wallpaperUrl')) updates.push(['wallpaper_url', assetUrl(body.wallpaperUrl, '壁纸地址')]);
+    if (Object.prototype.hasOwnProperty.call(body, 'siteTitle')) updates.push(['site_title', String(body.siteTitle || '').trim().slice(0, 80)]);
+    if (Object.prototype.hasOwnProperty.call(body, 'siteDescription')) updates.push(['site_description', String(body.siteDescription || '').trim().slice(0, 200)]);
+    const save = db.prepare('INSERT OR REPLACE INTO site_settings (key, value) VALUES (?, ?)');
+    db.exec('BEGIN');
+    try {
+      for (const [key, value] of updates) save.run(key, value);
+      db.exec('COMMIT');
+    } catch (error) {
+      db.exec('ROLLBACK');
+      throw error;
+    }
+    res.json({ ok: true, settings: readSettings() });
   }));
 
   return router;
