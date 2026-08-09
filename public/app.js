@@ -1,4 +1,4 @@
-const { $, $$, t, escapeHtml, safeUrl, formatDate, request, setHint, initLocale } = window.Sakura;
+const { $, t, escapeHtml, safeUrl, formatDate, request, setHint, initLocale, getLocale } = window.Sakura;
 let activeTag = '';
 let searchTimer;
 let postsController;
@@ -45,7 +45,7 @@ async function loadPosts({ signal } = {}) {
   if (keyword) query.set('q', keyword);
   if (activeTag) query.set('tag', activeTag);
   const data = await request(`/api/posts?${query}`, { signal: postsController.signal });
-  $('#post-count').textContent = `${data.posts.length} ${t('common.locale') === 'English' ? 'notes' : '篇记录'}`;
+  $('#post-count').textContent = `${data.posts.length} ${t('common.notes')}`;
   renderTagFilters(data.posts);
   renderPosts(data.posts);
 }
