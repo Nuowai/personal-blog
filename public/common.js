@@ -5,6 +5,8 @@
       'common.loading': '加载中…',
       'common.locale': 'English',
       'common.notes': '篇记录',
+      'nav.home': '首页', 'nav.about': '关于我', 'nav.guestbook': '留言板', 'nav.write': '写文章', 'nav.backHome': '回到首页',
+      'home.eyebrow': '正在和世界交换一点点温柔', 'home.heroTitle': '你好呀，<br><em>欢迎来到我的小宇宙。</em>', 'home.heroDescription': '这里收藏生活碎片、技术折腾和那些悄悄发光的瞬间。愿你路过时，刚好被一阵樱花风吹到。', 'home.recent': '最近写了什么', 'home.searchPlaceholder': '搜索文章、标签或关键词…', 'home.aboutKicker': 'A LITTLE ABOUT ME', 'home.aboutTitle': '小樱 / Sakura', 'home.aboutText': '会写代码，也会在下午三点认真吃一块小蛋糕。喜欢把复杂的事情变简单，把普通的日子过得有一点可爱。', 'home.guestKicker': 'SAY HELLO', 'home.guestTitle': '留下一个脚印', 'home.guestText': '路过的话，和我说句话吧～', 'home.nickname': '你的昵称', 'home.message': '想说些什么呢？', 'home.aiTitle': 'DeepSeek 小助手',
       'common.backHome': '← 回到手帐首页',
       'post.notFound': '文章没有找到',
       'post.empty': '没有找到这类记录，换个关键词试试吧～',
@@ -40,6 +42,8 @@
       'common.loading': 'Loading…',
       'common.locale': '中文',
       'common.notes': 'notes',
+      'nav.home': 'Home', 'nav.about': 'About', 'nav.guestbook': 'Guestbook', 'nav.write': 'Write', 'nav.backHome': 'Back home',
+      'home.eyebrow': 'Exchanging a little tenderness with the world', 'home.heroTitle': 'Hello,<br><em>welcome to my little universe.</em>', 'home.heroDescription': 'A collection of life fragments, technical experiments, and quietly glowing moments. May a breeze of sakura find you here.', 'home.recent': 'Recent notes', 'home.searchPlaceholder': 'Search posts, tags, or keywords…', 'home.aboutKicker': 'A LITTLE ABOUT ME', 'home.aboutTitle': 'Sakura', 'home.aboutText': 'I write code and take cake seriously at three in the afternoon. I like making complex things simple and ordinary days a little cute.', 'home.guestKicker': 'SAY HELLO', 'home.guestTitle': 'Leave a footprint', 'home.guestText': 'If you are passing by, say hello～', 'home.nickname': 'Your name', 'home.message': 'What would you like to say?', 'home.aiTitle': 'DeepSeek assistant',
       'common.backHome': '← Back home',
       'post.notFound': 'Post not found',
       'post.empty': 'No matching notes were found.',
@@ -110,11 +114,17 @@
     node.textContent = message;
     node.classList.toggle('error', error);
   }
+  function applyStaticTranslations() {
+    $('[data-i18n]').forEach((node) => { node.textContent = t(node.dataset.i18n); });
+    $('[data-i18n-html]').forEach((node) => { node.innerHTML = t(node.dataset.i18nHtml); });
+    $('[data-i18n-placeholder]').forEach((node) => { node.placeholder = t(node.dataset.i18nPlaceholder); });
+  }
   function setLocale(locale) {
     state.locale = locale === 'en' ? 'en' : 'zh-CN';
     localStorage.setItem('sakura-note-locale', state.locale);
     document.documentElement.lang = state.locale;
-    $$('#locale-toggle').forEach((node) => { node.textContent = t('common.locale'); node.title = t('common.locale'); });
+    applyStaticTranslations();
+    $('#locale-toggle').forEach((node) => { node.textContent = t('common.locale'); node.title = t('common.locale'); });
     window.dispatchEvent(new CustomEvent('sakura:locale-change', { detail: { locale: state.locale } }));
   }
   let localeInitialized = false;
@@ -124,6 +134,6 @@
     setLocale(state.locale);
     $$('#locale-toggle').forEach((node) => node.addEventListener('click', () => setLocale(state.locale === 'en' ? 'zh-CN' : 'en')));
   }
-  window.Sakura = { $, $$, t, escapeHtml, safeUrl, formatDate, request, RequestError, setHint, setLocale, initLocale, getLocale: () => state.locale };
+  window.Sakura = { $, $, t, escapeHtml, safeUrl, formatDate, request, RequestError, setHint, setLocale, initLocale, getLocale: () => state.locale };
   initLocale();
 })();
