@@ -28,7 +28,7 @@ async function setupGoogleSignIn() {
         callback: async ({ credential }) => {
           button.style.opacity = '0.6'; setHint(hint, t('auth.googleLoading'));
           try { await request('/api/auth/google', { method: 'POST', body: JSON.stringify({ credential }) }); location.href = '/'; }
-          catch (error) { button.style.opacity = ''; setHint(hint, error.message, true); }
+          catch (error) { button.style.opacity = ''; setHint(hint, errorMessage(error), true); }
         }
       });
       window.google.accounts.id.renderButton(button, { theme: 'outline', size: 'large', text: 'signin_with', width: 320 });
@@ -39,7 +39,7 @@ async function setupGoogleSignIn() {
     const timer = setInterval(() => {
       if (render() || ++attempts >= 40) { clearInterval(timer); if (attempts >= 40 && !window.google?.accounts?.id) setHint(hint, t('auth.googleLoadFailed'), true); }
     }, 250);
-  } catch (error) { setHint(hint, error.message, true); }
+  } catch (error) { setHint(hint, errorMessage(error), true); }
 }
 function initAuthPage() {
   const form = $('#auth-form');
