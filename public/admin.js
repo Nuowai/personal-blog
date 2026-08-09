@@ -52,14 +52,30 @@ async function loadSettings() {
     const admin = settings.admin || {};
     $('#admin-identity').textContent = admin.email ? `${admin.name || '糯歪'} · ${admin.email}` : (admin.name || '糯歪');
   } catch (error) {
-    setHint('#site-settings-hint', error.message, true);
+    setHint('#site-settings-hint', errorMessage(error), true);
   }
 }
 function resetEditor() {
   $('#post-form').reset(); $('#post-id').value = ''; $('#category').value = '日常'; $('#cover-emoji').value = '🌸'; $('#published').checked = true; $('#editor-title').textContent = '写一篇新文章';
 }
-function editPost(post) {
-  $('#post-id').value = post.id; $('#title').value = post.title; $('#category').value = post.category; $('#tags').value = (post.tags || []).join(','); $('#cover-emoji').value = post.cover_emoji; $('#cover-image').value = post.cover_image || ''; $('#excerpt').value = post.excerpt; $('#content').value = post.content || ''; $('#published').checked = post.published; $('#editor-title').textContent = '修改这篇文章'; window.scrollTo({ top: 0, behavior: 'smooth' });
+async function editPost(post) {
+  try {
+    const result = await api(`/api/admin/posts/${post.id}`);
+    const detail = result.post;
+    $('#post-id').value = detail.id;
+    $('#title').value = detail.title;
+    $('#category').value = detail.category;
+    $('#tags').value = (detail.tags || []).join(',');
+    $('#cover-emoji').value = detail.cover_emoji;
+    $('#cover-image').value = detail.cover_image || '';
+    $('#excerpt').value = detail.excerpt;
+    $('#content').value = detail.content || '';
+    $('#published').checked = detail.published;
+    $('#editor-title').textContent = '修改这篇文章';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } catch (error) {
+    setHint('#editor-hint', errorMessage(error), true);
+  }
 }
 function insertMedia(item) {
   const textarea = $('#content');
