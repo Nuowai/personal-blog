@@ -2,6 +2,7 @@ const { $, t, escapeHtml, safeUrl, errorMessage, request, setHint, initSiteSetti
 const TOKEN_KEY = 'sakura-note-admin-token';
 let posts = [];
 let media = [];
+let adminIdentity = {};
 
 const token = () => sessionStorage.getItem(TOKEN_KEY) || '';
 const api = (url, options = {}) => request(url, { ...options, headers: { 'x-admin-token': token(), ...(options.headers || {}) } });
@@ -16,7 +17,7 @@ function showLogin() {
   $('#editor-panel').hidden = true;
 }
 async function verifyToken() {
-  try { await api('/api/auth/admin-check'); await showEditor(); }
+  try { const result = await api('/api/auth/admin-check'); adminIdentity = result.admin || {}; await showEditor(); }
   catch (error) { sessionStorage.removeItem(TOKEN_KEY); showLogin(); if (error.status !== 401) setHint('#login-hint', errorMessage(error), true); }
 }
 function renderAdminPosts() {
@@ -49,8 +50,7 @@ async function loadSettings() {
     $('#site-description').value = settings.siteDescription || '';
     $('#favicon-url').value = settings.faviconUrl || '';
     $('#wallpaper-url').value = settings.wallpaperUrl || '';
-    const admin = settings.admin || {};
-    $('#admin-identity').textContent = admin.email ? `${admin.name || '糯歪'} · ${admin.email}` : (admin.name || '糯歪');
+    $('#admin-identity').textContent = adminIdentity.email ? `${adminIdentity.name || '糯歪'} · ${adminIdentity.email}` : (adminIdentity.name || '糯歪');
   } catch (error) {
     setHint('#site-settings-hint', errorMessage(error), true);
   }
