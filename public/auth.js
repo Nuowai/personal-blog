@@ -58,9 +58,9 @@ function initAuthPage() {
   };
   switchButton.addEventListener('click', () => { mode = mode === 'login' ? 'register' : 'login'; renderMode(); setHint('#auth-hint', ''); });
   form.addEventListener('submit', (event) => { event.preventDefault(); submitAuth(form, mode); });
+  window.addEventListener('sakura:locale-change', renderMode);
   renderMode(); setupGoogleSignIn();
 }
-window.addEventListener('sakura:locale-change', () => initAuthPage());
 initLocale();
 loadCurrentUser();
 initAuthPage();
