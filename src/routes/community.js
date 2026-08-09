@@ -1,7 +1,6 @@
 const express = require('express');
 const { AppError, asyncHandler, rateLimit } = require('../http');
 const { validateMessage } = require('../validation');
-const { publicPostFields } = require('../format');
 
 function createCommunityRouter({ db }) {
   const router = express.Router();
