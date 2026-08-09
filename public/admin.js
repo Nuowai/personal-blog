@@ -20,7 +20,7 @@ async function verifyToken() {
   catch (error) { sessionStorage.removeItem(TOKEN_KEY); showLogin(); if (error.status !== 401) setHint('#login-hint', errorMessage(error), true); }
 }
 function renderAdminPosts() {
-  $('#admin-post-list').innerHTML = posts.length ? posts.map((post) => `<div class="admin-post-item" data-id="${post.id}"><span class="post-mini-emoji">${escapeHtml(post.cover_emoji)}</span><strong>${escapeHtml(post.title)}<small>${post.published ? t('admin.published') : t('admin.draft')}</small></strong><button data-action="edit" type="button">${t('admin.edit')}</button><button data-action="delete" type="button">${t('admin.delete')}</button></div>`).join('') : '<div class="admin-empty">${t('admin.emptyPosts')}</div>';
+  $('#admin-post-list').innerHTML = posts.length ? posts.map((post) => `<div class="admin-post-item" data-id="${post.id}"><span class="post-mini-emoji">${escapeHtml(post.cover_emoji)}</span><strong>${escapeHtml(post.title)}<small>${post.published ? t('admin.published') : t('admin.draft')}</small></strong><button data-action="edit" type="button">${t('admin.edit')}</button><button data-action="delete" type="button">${t('admin.delete')}</button></div>`).join('')  : `<div class="admin-empty">${t('admin.emptyPosts')}</div>`;
 }
 function formatSize(size) {
   const bytes = Number(size) || 0;
@@ -31,7 +31,7 @@ function renderMedia() {
     const url = safeUrl(item.url);
     const preview = item.mime_type.startsWith('image/') && url ? `<img src="${escapeHtml(url)}" alt="">` : item.mime_type.startsWith('video/') ? '▶' : '♫';
     return `<div class="media-item"><div class="media-preview">${preview}</div><div class="media-info"><strong title="${escapeHtml(item.name)}">${escapeHtml(item.name)}</strong><small>${formatSize(item.size)}</small></div><button data-media-action="insert" data-id="${item.id}" type="button">插入</button><button data-media-action="delete" data-id="${item.id}" type="button">删</button></div>`;
-  }).join('') : '<div class="admin-empty">${t('admin.emptyMedia')}</div>';
+  }).join('')  : `<div class="admin-empty">${t('admin.emptyMedia')}</div>`;
 }
 async function loadAdminPosts() {
   try { posts = (await api('/api/admin/posts')).posts; renderAdminPosts(); }
