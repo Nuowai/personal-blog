@@ -1,4 +1,4 @@
-const { $, t, escapeHtml, safeUrl, formatDate, request, setHint } = window.Sakura;
+const { $, t, escapeHtml, safeUrl, formatDate, request, errorMessage, setHint, initSiteSettings } = window.Sakura;
 let activeTag = '';
 let searchTimer;
 let postsController;
@@ -8,16 +8,8 @@ const themes = ['sakura', 'night', 'mint', 'lavender'];
 function applyTheme(theme) {
   const chosen = themes.includes(theme) ? theme : 'sakura';
   document.body.dataset.theme = chosen;
-  localStorage.setItem('sakura-note-theme', chosen);
   const toggle = $('#theme-toggle');
   if (toggle) toggle.textContent = chosen === 'night' ? '🌙' : chosen === 'mint' ? '🌿' : chosen === 'lavender' ? '💜' : '🌸';
-}
-
-async function loadTheme() {
-  const saved = localStorage.getItem('sakura-note-theme');
-  if (saved) return applyTheme(saved);
-  const data = await request('/api/settings');
-  applyTheme(data.theme);
 }
 
 function renderTagFilters(posts) {
@@ -36,21 +28,25 @@ function renderPosts(posts) {
   }).join('') : `<div class="empty-card">${escapeHtml(t('post.empty'))}</div>`;
 }
 
-async function loadPosts({ signal } = {}) {
+async function loadPosts() {
   postsController?.abort();
-  postsController = new AbortController();
-  if (signal) signal = postsController.signal;
+  const controller = new AbortController();
+  postsController = controller;
   const query = new URLSearchParams();
   const keyword = $('#search-input')?.value.trim();
   if (keyword) query.set('q', keyword);
   if (activeTag) query.set('tag', activeTag);
-  const data = await request(`/api/posts?${query}`, { signal: postsController.signal });
+  const data = await request(`/api/posts?${query}`, { signal: controller.signal });
   $('#post-count').textContent = `${data.posts.length} ${t('common.notes')}`;
   renderTagFilters(data.posts);
   renderPosts(data.posts);
 }
-
-async function loadGuestbook() {
+function isAbortError(error) {
+  return error?.name === 'AbortError';
+}
+function handleRequestError(selector, error) {
+  if (!isAbortError(error)) setHint(selector, errorMessage(error), true);
+}async function loadGuestbook() {
   const data = await request('/api/guestbook');
   const list = $('#guestbook-list');
   if (!list) return;
@@ -71,7 +67,7 @@ function initGuestbook() {
       setHint('#guestbook-hint', t('guestbook.success'));
       await loadGuestbook();
     } catch (error) {
-      setHint('#guestbook-hint', error.message, true);
+      setHint('#guestbook-hint', errorMessage(error), true);
     } finally { button.disabled = false; }
   });
 }
@@ -102,19 +98,19 @@ function initDeepSeekChat() {
       const answer = data.choices?.[0]?.message?.content || t('common.networkError');
       messages.push({ role: 'assistant', content: answer }); addBubble(answer);
     } catch (error) {
-      loading.remove(); addBubble(t('ai.failed', { message: error.message }), 'error');
+      loading.remove(); addBubble(errorMessage(error), 'error');
     } finally { send.disabled = false; input.focus(); }
   });
 }
 
 function initHome() {
   $('#theme-toggle')?.addEventListener('click', () => applyTheme(themes[(themes.indexOf(document.body.dataset.theme) + 1) % themes.length]));
-  $('#search-form')?.addEventListener('submit', (event) => { event.preventDefault(); activeTag = ''; loadPosts().catch((error) => setHint('#post-list', error.message, true)); });
+  $('#search-form')?.addEventListener('submit', (event) => { event.preventDefault(); activeTag = ''; loadPosts().catch((error) => handleRequestError('#post-list', error)); });
   $('#search-input')?.addEventListener('input', () => { clearTimeout(searchTimer); searchTimer = setTimeout(() => loadPosts().catch((error) => setHint('#post-list', error.message, true)), 300); });
   $('#tag-filters')?.addEventListener('click', (event) => { const button = event.target.closest('[data-tag]'); if (!button) return; activeTag = button.dataset.tag; loadPosts().catch((error) => setHint('#post-list', error.message, true)); });
-  loadTheme().catch((error) => setHint('#post-list', error.message, true));
+  initSiteSettings().then((settings) => applyTheme(settings?.theme || 'sakura')).catch((error) => { applyTheme('sakura'); handleRequestError('#post-list', error); });
   loadPosts().catch((error) => setHint('#post-list', error.message, true));
-  loadGuestbook().catch((error) => setHint('#guestbook-list', error.message, true));
+  loadGuestbook().catch((error) => handleRequestError('#guestbook-list', error));
   initGuestbook();
   initDeepSeekChat();
 }
