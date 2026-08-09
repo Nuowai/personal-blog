@@ -14,6 +14,7 @@ function createAdminRouter({ db, config }) {
     next();
   };
   const allowedMimes = new Set(['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'video/mp4', 'video/webm', 'audio/mpeg', 'audio/ogg', 'audio/wav']);
+  const allowedExtensions = new Set(['.jpg', '.jpeg', '.png', '.gif', '.webp', '.mp4', '.webm', '.mp3', '.ogg', '.wav']);
   const storage = multer.diskStorage({
     destination: config.uploadDir,
     filename: (req, file, cb) => cb(null, `${Date.now()}-${crypto.randomBytes(8).toString('hex')}${path.extname(file.originalname).toLowerCase()}`)
@@ -21,7 +22,7 @@ function createAdminRouter({ db, config }) {
   const upload = multer({
     storage,
     limits: { fileSize: 200 * 1024 * 1024 },
-    fileFilter: (req, file, cb) => cb(null, allowedMimes.has(file.mimetype))
+    fileFilter: (req, file, cb) => cb(null, allowedMimes.has(file.mimetype) && allowedExtensions.has(path.extname(file.originalname).toLowerCase()))
   });
 
   router.post('/media', requireAdmin, upload.single('file'), asyncHandler(async (req, res) => {
