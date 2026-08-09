@@ -1,3 +1,4 @@
+const crypto = require('node:crypto');
 const { marked } = require('marked');
 const sanitizeHtml = require('sanitize-html');
 
@@ -46,8 +47,8 @@ function formatPost(row, { includeContent = false } = {}) {
 
 function makeSlug(title) {
   const slug = String(title || '').normalize('NFKC').toLowerCase()
-    .replace(/[^w一-鿿]+/g, '-').replace(/(^-|-$)/g, '').slice(0, 80);
-  return slug || `post-${Date.now().toString(36)}`;
+    .replace(/[^\p{L}\p{N}]+/gu, '-').replace(/(^-|-$)/g, '').slice(0, 80);
+  return slug || `post-${crypto.randomUUID().slice(0, 8)}`;
 }
 
 function escapeXml(value) {
