@@ -9,7 +9,7 @@ const { DatabaseSync } = require('node:sqlite');
 
 const app = express();
 const PORT = Number(process.env.PORT || 3000);
-const ADMIN_TOKEN = process.env.ADMIN_TOKEN || 'sakura-change-me';
+const ADMIN_TOKEN = process.env.ADMIN_TOKEN || '';
 const AMAP_JS_KEY = process.env.AMAP_JS_KEY || '';
 const AMAP_SECURITY_CODE = process.env.AMAP_SECURITY_CODE || '';
 const AMAP_WEB_KEY = process.env.AMAP_WEB_KEY || '';
@@ -33,7 +33,19 @@ function verifyPassword(password, stored) {
   return crypto.timingSafeEqual(Buffer.from(h, 'hex'), Buffer.from(v, 'hex'));
 }
 
+function parseCookies(req) {
+  const header = req.headers.cookie || '';
+  return Object.fromEntries(header.split(';').map((part) => part.trim().split('='))
+    .filter(([key, value]) => key && value)
+    .map(([key, ...value]) => [key, decodeURIComponent(value.join('='))]));
+}
+
+function getSessionToken(req) {
+  return parseCookies(req).sakura_session || '';
+}
+
 function requireAdmin(req, res, next) {
+  if (!ADMIN_TOKEN) return res.status(503).json({ error: '站点尚未配置 ADMIN_TOKEN' });
   const provided = req.headers['x-admin-token'] || '';
   if (provided && provided === ADMIN_TOKEN) return next();
   res.status(401).json({ error: '需要管理员密钥' });
@@ -199,18 +211,19 @@ function setSessionCookie(res, userId) {
   const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
   const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().replace('T', ' ').slice(0, 19);
   db.prepare('INSERT OR REPLACE INTO sessions (token_hash, user_id, expires_at) VALUES (?, ?, ?)').run(tokenHash, userId, expiresAt);
-  res.cookie('sakura_session', token, { httpOnly: true, sameSite: 'lax', maxAge: 30 * 24 * 60 * 60 * 1000 });
+  const secure = process.env.NODE_ENV === 'production' ? '; Secure' : '';
+  res.setHeader('Set-Cookie', `sakura_session=${encodeURIComponent(token)}; Max-Age=${30 * 24 * 60 * 60}; Path=/; HttpOnly; SameSite=Lax${secure}`);
 }
 
 app.post('/api/auth/logout', (req, res) => {
-  const token = req.cookies?.sakura_session;
+  const token = getSessionToken(req);
   if (token) db.prepare('DELETE FROM sessions WHERE token_hash = ?').run(crypto.createHash('sha256').update(token).digest('hex'));
-  res.clearCookie('sakura_session');
+  res.setHeader('Set-Cookie', 'sakura_session=; Max-Age=0; Path=/; HttpOnly; SameSite=Lax');
   res.json({ ok: true });
 });
 
 app.get('/api/auth/me', (req, res) => {
-  const token = req.cookies?.sakura_session;
+  const token = getSessionToken(req);
   if (!token) return res.json({ user: null });
   const session = db.prepare('SELECT user_id FROM sessions WHERE token_hash = ? AND expires_at > datetime(\'now\')').get(crypto.createHash('sha256').update(token).digest('hex'));
   if (!session) return res.json({ user: null });
