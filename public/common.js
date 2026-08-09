@@ -57,7 +57,7 @@
       'errors.WEATHER_NOT_CONFIGURED': '天气服务尚未配置',
       'errors.WEATHER_UPSTREAM_ERROR': '天气服务暂时不可用',
       'errors.MEDIA_TYPE_NOT_ALLOWED': '媒体类型或扩展名不受支持',
-      'errors.INVALID_MEDIA_PATH': '媒体路径无效'
+      'errors.INVALID_MEDIA_PATH': '媒体路径无效',
       'admin.invalidToken': '管理员密钥不正确',
       'admin.saved': '保存成功 ✨',
       'admin.deleted': '已删除。',
