@@ -56,17 +56,18 @@ function createAdminRouter({ db, config }) {
     res.status(204).end();
   }));
 
-  function readSettings() {
+  function readSettings({ includeAdmin = false } = {}) {
     const rows = db.prepare('SELECT key, value FROM site_settings').all();
     const values = Object.fromEntries(rows.map((row) => [row.key, row.value]));
-    return {
+    const settings = {
       theme: values.theme || 'sakura',
       faviconUrl: values.favicon_url || '',
       wallpaperUrl: values.wallpaper_url || '',
       siteTitle: values.site_title || 'Sakura Note · 樱花汽水日记',
-      siteDescription: values.site_description || '一个软萌的个人博客。',
-      admin: { name: config.adminName, email: config.adminEmail }
+      siteDescription: values.site_description || '一个软萌的个人博客。'
     };
+    if (includeAdmin) settings.admin = { name: config.adminName, email: config.adminEmail };
+    return settings;
   }
 
   function assetUrl(value, field) {
@@ -112,7 +113,7 @@ function createAdminRouter({ db, config }) {
       db.exec('ROLLBACK');
       throw error;
     }
-    res.json({ ok: true, settings: readSettings() });
+    res.json({ ok: true, settings: readSettings({ includeAdmin: true }) });
   }));
 
   return router;
