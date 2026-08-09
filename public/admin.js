@@ -1,4 +1,4 @@
-const { $, t, escapeHtml, safeUrl, request, setHint } = window.Sakura;
+const { $, t, escapeHtml, safeUrl, errorMessage, request, setHint, initSiteSettings } = window.Sakura;
 const TOKEN_KEY = 'sakura-note-admin-token';
 let posts = [];
 let media = [];
@@ -6,18 +6,18 @@ let media = [];
 const token = () => sessionStorage.getItem(TOKEN_KEY) || '';
 const api = (url, options = {}) => request(url, { ...options, headers: { 'x-admin-token': token(), ...(options.headers || {}) } });
 
-function showEditor() {
+async function showEditor() {
   $('#login-panel').hidden = true;
   $('#editor-panel').hidden = false;
-  Promise.all([loadAdminPosts(), loadMedia(), loadSettings()]);
+  await Promise.all([loadAdminPosts(), loadMedia(), loadSettings()]);
 }
 function showLogin() {
   $('#login-panel').hidden = false;
   $('#editor-panel').hidden = true;
 }
 async function verifyToken() {
-  try { await api('/api/auth/admin-check'); showEditor(); }
-  catch (error) { sessionStorage.removeItem(TOKEN_KEY); showLogin(); if (error.status !== 401) setHint('#login-hint', error.message, true); }
+  try { await api('/api/auth/admin-check'); await showEditor(); }
+  catch (error) { sessionStorage.removeItem(TOKEN_KEY); showLogin(); if (error.status !== 401) setHint('#login-hint', errorMessage(error), true); }
 }
 function renderAdminPosts() {
   $('#admin-post-list').innerHTML = posts.length ? posts.map((post) => `<div class="admin-post-item" data-id="${post.id}"><span class="post-mini-emoji">${escapeHtml(post.cover_emoji)}</span><strong>${escapeHtml(post.title)}<small>${post.published ? '已发布' : '草稿'}</small></strong><button data-action="edit" type="button">编辑</button><button data-action="delete" type="button">删</button></div>`).join('') : '<div class="admin-empty">文章抽屉还是空的～</div>';
@@ -43,7 +43,7 @@ async function loadMedia() {
 }
 async function loadSettings() {
   try {
-    const settings = await request('/api/settings');
+    const settings = await initSiteSettings();
     $('#theme-select').value = settings.theme || 'sakura';
     $('#site-title').value = settings.siteTitle || '';
     $('#site-description').value = settings.siteDescription || '';
