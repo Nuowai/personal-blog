@@ -69,7 +69,7 @@
       'admin.emptyMedia': '还没有上传媒体～',
       'admin.chooseFile': '先选择一个文件哦～',
       'admin.confirmDeleteMedia': '确定删除「{name}」吗？',
-      'admin.confirmDeletePost': '确定要删除「{name}」吗？'
+      'admin.confirmDeletePost': '确定要删除「{name}」吗？',
       'admin.invalidToken': '管理员密钥不正确',
       'admin.saved': '保存成功 ✨',
       'admin.deleted': '已删除。',
