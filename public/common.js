@@ -119,6 +119,23 @@
     $('[data-i18n-html]').forEach((node) => { node.innerHTML = t(node.dataset.i18nHtml); });
     $('[data-i18n-placeholder]').forEach((node) => { node.placeholder = t(node.dataset.i18nPlaceholder); });
   }
+  function applySiteSettings(settings) {
+    const iconUrl = safeUrl(settings.faviconUrl);
+    let icon = document.querySelector('link[rel="icon"]');
+    if (!icon) { icon = document.createElement('link'); icon.rel = 'icon'; document.head.appendChild(icon); }
+    if (iconUrl) icon.href = iconUrl;
+    const wallpaperUrl = safeUrl(settings.wallpaperUrl);
+    document.body.classList.toggle('custom-wallpaper', Boolean(wallpaperUrl));
+    document.body.style.setProperty('--custom-wallpaper-image', wallpaperUrl ? `url("${wallpaperUrl.replace(/["\\\\)]/g, '')}")` : '');
+    document.querySelectorAll('.video-bg').forEach((video) => { video.style.opacity = wallpaperUrl ? '0' : ''; });
+    if (settings.siteTitle && !document.title.includes('·')) document.title = settings.siteTitle;
+    const description = document.querySelector('meta[name="description"]');
+    if (description && settings.siteDescription) description.content = settings.siteDescription;
+  }
+  async function initSiteSettings() {
+    try { applySiteSettings(await request('/api/settings')); }
+    catch (error) { console.warn('Unable to load site settings', error); }
+  }
   function setLocale(locale) {
     state.locale = locale === 'en' ? 'en' : 'zh-CN';
     localStorage.setItem('sakura-note-locale', state.locale);
@@ -136,4 +153,5 @@
   }
   window.Sakura = { $, $, t, escapeHtml, safeUrl, formatDate, request, RequestError, setHint, setLocale, initLocale, getLocale: () => state.locale };
   initLocale();
+  initSiteSettings();
 })();
