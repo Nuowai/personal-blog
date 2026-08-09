@@ -1,4 +1,4 @@
-const { $, t, escapeHtml, safeUrl, request, setHint, initLocale } = window.Sakura;
+const { $, t, escapeHtml, safeUrl, request, setHint } = window.Sakura;
 const TOKEN_KEY = 'sakura-note-admin-token';
 let posts = [];
 let media = [];
@@ -109,5 +109,4 @@ $('#save-theme').addEventListener('click', async () => {
   catch (error) { setHint('#editor-hint', error.message, true); }
 });
 window.addEventListener('sakura:locale-change', () => { renderAdminPosts(); renderMedia(); });
-initLocale();
 if (token()) verifyToken();
