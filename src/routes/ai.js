@@ -29,7 +29,7 @@ function createAiRouter() {
       })
     });
     const data = await upstream.json();
-    if (!upstream.ok) throw new AppError(upstream.status === 429 ? 429 : 502, 'DEEPSEEK_UPSTREAM_ERROR', data?.error?.message || 'DeepSeek 请求失败');
+    if (!upstream.ok) throw new AppError(upstream.status === 429 ? 429 : 502, 'DEEPSEEK_UPSTREAM_ERROR', 'DeepSeek 服务暂时不可用');
     res.json(data);
   }));
 
