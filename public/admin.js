@@ -9,7 +9,7 @@ const api = (url, options = {}) => request(url, { ...options, headers: { 'x-admi
 function showEditor() {
   $('#login-panel').hidden = true;
   $('#editor-panel').hidden = false;
-  Promise.all([loadAdminPosts(), loadMedia(), loadTheme()]);
+  Promise.all([loadAdminPosts(), loadMedia(), loadSettings()]);
 }
 function showLogin() {
   $('#login-panel').hidden = false;
@@ -41,9 +41,19 @@ async function loadMedia() {
   try { media = (await api('/api/media')).media; renderMedia(); }
   catch (error) { setHint('#media-hint', error.message, true); }
 }
-async function loadTheme() {
-  try { $('#theme-select').value = (await request('/api/settings')).theme; }
-  catch (error) { setHint('#editor-hint', error.message, true); }
+async function loadSettings() {
+  try {
+    const settings = await request('/api/settings');
+    $('#theme-select').value = settings.theme || 'sakura';
+    $('#site-title').value = settings.siteTitle || '';
+    $('#site-description').value = settings.siteDescription || '';
+    $('#favicon-url').value = settings.faviconUrl || '';
+    $('#wallpaper-url').value = settings.wallpaperUrl || '';
+    const admin = settings.admin || {};
+    $('#admin-identity').textContent = admin.email ? `${admin.name || '糯歪'} · ${admin.email}` : (admin.name || '糯歪');
+  } catch (error) {
+    setHint('#site-settings-hint', error.message, true);
+  }
 }
 function resetEditor() {
   $('#post-form').reset(); $('#post-id').value = ''; $('#category').value = '日常'; $('#cover-emoji').value = '🌸'; $('#published').checked = true; $('#editor-title').textContent = '写一篇新文章';
@@ -104,9 +114,29 @@ $('#admin-post-list').addEventListener('click', async (event) => {
     catch (error) { setHint('#editor-hint', error.message, true); }
   }
 });
-$('#save-theme').addEventListener('click', async () => {
-  try { await api('/api/settings', { method: 'PUT', body: JSON.stringify({ theme: $('#theme-select').value }) }); localStorage.setItem('sakura-note-theme', $('#theme-select').value); setHint('#editor-hint', t('admin.saved')); }
-  catch (error) { setHint('#editor-hint', error.message, true); }
+async function saveSiteSettings() {
+  try {
+    const result = await api('/api/settings', {
+      method: 'PUT',
+      body: JSON.stringify({
+        theme: $('#theme-select').value,
+        siteTitle: $('#site-title').value,
+        siteDescription: $('#site-description').value,
+        faviconUrl: $('#favicon-url').value,
+        wallpaperUrl: $('#wallpaper-url').value
+      })
+    });
+    const saved = result.settings || {};
+    localStorage.setItem('sakura-note-theme', saved.theme || $('#theme-select').value);
+    setHint('#site-settings-hint', t('admin.saved'));
+  } catch (error) {
+    setHint('#site-settings-hint', error.message, true);
+  }
+}
+$('#site-settings-form')?.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  await saveSiteSettings();
 });
-window.addEventListener('sakura:locale-change', () => { renderAdminPosts(); renderMedia(); });
+$('#save-theme').addEventListener('click', () => $('#site-settings-form')?.requestSubmit());
+window.addEventListener('sakura:locale-change', () => { renderAdminPosts(); renderMedia(); loadSettings(); });
 if (token()) verifyToken();
