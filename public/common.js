@@ -30,6 +30,7 @@
       'auth.googleLoadFailed': 'Google 登录组件加载失败，请检查网络。',
       'location.notConfigured': '站点未配置地图服务',
       'location.loading': '正在定位附近城市…',
+      'location.failed': '定位失败，使用默认城市',
       'weather.loading': '天气信息加载中…',
       'weather.notConfigured': '站点未配置天气服务',
       'errors.ADMIN_NOT_CONFIGURED': '管理员尚未配置',
@@ -77,7 +78,9 @@
       'errors.RATE_LIMITED': 'Too many requests. Please try again later.',
       'errors.VALIDATION_ERROR': 'The submitted data is invalid.',
       'errors.WEATHER_NOT_CONFIGURED': 'Weather service is not configured.',
-      'errors.WEATHER_UPSTREAM_ERROR': 'Weather service is temporarily unavailable.'
+      'errors.WEATHER_UPSTREAM_ERROR': 'Weather service is temporarily unavailable.',
+      'errors.MEDIA_TYPE_NOT_ALLOWED': 'The media type or extension is not supported.',
+      'errors.INVALID_MEDIA_PATH': 'The media path is invalid.',
       'admin.invalidToken': '管理员密钥不正确',
       'admin.saved': '保存成功 ✨',
       'admin.deleted': '已删除。',
@@ -113,6 +116,7 @@
       'auth.googleLoadFailed': 'Google sign-in failed to load. Check your network.',
       'location.notConfigured': 'Map service is not configured',
       'location.loading': 'Locating your nearby city…',
+      'location.failed': 'Location failed. Using the default city.',
       'weather.loading': 'Loading weather…',
       'weather.notConfigured': 'Weather service is not configured',
       'admin.invalidToken': 'The administrator token is incorrect',
@@ -223,7 +227,7 @@
     setLocale(state.locale);
     $$('#locale-toggle').forEach((node) => node.addEventListener('click', () => setLocale(state.locale === 'en' ? 'zh-CN' : 'en')));
   }
-  window.Sakura = { $, $, t, escapeHtml, safeUrl, formatDate, request, RequestError, errorMessage, setHint, setLocale, initLocale, initSiteSettings, getLocale: () => state.locale };
+  window.Sakura = { $, $$, t, escapeHtml, safeUrl, formatDate, request, RequestError, errorMessage, setHint, setLocale, initLocale, initSiteSettings, getLocale: () => state.locale };
   initLocale();
   initSiteSettings().catch((error) => { document.documentElement.dataset.settingsError = 'true'; console.error('Site settings failed to load', error); });
 })();
