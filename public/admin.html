@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="theme-color" content="#ff7fa7">
+  <title>写文章 · Sakura Note</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet"><link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <video class="video-bg" src="/bg-video.mp4" autoplay muted loop playsinline></video><div class="video-overlay"></div>
+  <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
+  <header class="site-header"><a class="brand" href="/"><span class="brand-mark">🌸</span><span><strong>Sakura Note</strong><small>樱花汽水日记</small></span></a><nav class="top-nav"><a href="/">回到首页</a></nav></header>
+  <main class="admin-shell">
+    <section id="login-panel" class="admin-login mini-card"><span class="section-kicker">SECRET GARDEN</span><h1>进入写作小屋</h1><p>管理员密钥只保存在你的浏览器里，不会写进页面。</p><form id="login-form"><input id="admin-token" type="password" placeholder="输入 ADMIN_TOKEN" required><button class="button button-primary" type="submit">进入小屋 <span>→</span></button><div class="form-hint" id="login-hint"></div></form></section>
+    <section id="editor-panel" hidden>
+      <div class="admin-toolbar mini-card"><div><span class="section-kicker">CONTROL ROOM</span><h1>博客控制台</h1></div><div class="toolbar-actions"><label>默认主题<select id="theme-select"><option value="sakura">樱花汽水</option><option value="night">星夜紫</option><option value="mint">薄荷奶绿</option><option value="lavender">薰衣草</option></select></label><button class="button button-primary" id="save-theme" type="button">保存主题</button><button class="button button-quiet" id="logout-button" type="button">退出</button></div></div>
+      <div class="editor-layout">
+        <div class="editor-main mini-card"><div class="section-heading"><div><span class="section-kicker">WRITE / EDIT / PUBLISH</span><h1 id="editor-title">写一篇新文章</h1></div></div>
+          <form id="post-form" class="post-form"><input type="hidden" id="post-id"><label>标题<input id="title" required maxlength="100" placeholder="给今天起一个温柔的名字"></label><div class="form-row"><label>分类<input id="category" maxlength="30" value="日常"></label><label>封面表情<input id="cover-emoji" maxlength="8" value="🌸"></label></div><label>标签 <span class="label-note">用逗号分隔</span><input id="tags" maxlength="160" placeholder="生活,随笔,治愈"></label><label>封面图片 URL <span class="label-note">可从右侧媒体库插入</span><input id="cover-image" placeholder="/uploads/your-cover.jpg"></label><label>摘要<textarea id="excerpt" rows="2" maxlength="180" placeholder="在首页展示的一小段预告"></textarea></label><label>正文 <span class="label-note">支持 Markdown；上传视频后可插入播放器</span><textarea id="content" rows="17" required placeholder="# 今天也很不错&#10;&#10;写下你的故事吧～"></textarea></label><label class="check-label"><input id="published" type="checkbox" checked> 立即公开这篇文章（取消即保存为草稿）</label><div class="editor-actions"><button class="button button-primary" type="submit">保存文章 <span>✨</span></button><button class="button button-quiet" id="clear-button" type="button">清空编辑器</button><div class="form-hint" id="editor-hint"></div></div></form>
+        </div>
+        <aside class="editor-side"><section class="mini-card media-card"><div class="card-title-row"><div><span class="section-kicker">MEDIA LIBRARY</span><h3>图片 / 视频 / 音频</h3></div><span class="tiny-icon">▶</span></div><p class="side-help">单个文件最大 200MB。上传后点击"插入"，它会出现在正文光标位置。</p><input id="media-file" type="file" accept="image/*,video/*,audio/*"><button class="button button-primary upload-button" id="upload-media" type="button">上传媒体 <span>→</span></button><div class="form-hint" id="media-hint"></div><div id="media-list" class="media-list"></div></section><section class="mini-card"><div class="card-title-row"><div><span class="section-kicker">YOUR NOTES</span><h3>文章抽屉</h3></div><span class="tiny-icon">✨</span></div><div id="admin-post-list" class="admin-post-list"></div></section></aside>
+      </div>
+    </section>
+  </main>
+  <script src="/sakura.js" defer></script><script src="/admin.js" defer></script>
+</body>
+</html>
