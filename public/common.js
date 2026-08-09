@@ -4,6 +4,7 @@
       'common.networkError': '网络请求失败，请稍后再试',
       'common.loading': '加载中…',
       'common.locale': 'English',
+      'common.notes': '篇记录',
       'common.backHome': '← 回到手帐首页',
       'post.notFound': '文章没有找到',
       'post.empty': '没有找到这类记录，换个关键词试试吧～',
@@ -38,6 +39,7 @@
       'common.networkError': 'Network request failed. Please try again.',
       'common.loading': 'Loading…',
       'common.locale': '中文',
+      'common.notes': 'notes',
       'common.backHome': '← Back home',
       'post.notFound': 'Post not found',
       'post.empty': 'No matching notes were found.',
@@ -115,7 +117,10 @@
     $$('#locale-toggle').forEach((node) => { node.textContent = t('common.locale'); node.title = t('common.locale'); });
     window.dispatchEvent(new CustomEvent('sakura:locale-change', { detail: { locale: state.locale } }));
   }
+  let localeInitialized = false;
   function initLocale() {
+    if (localeInitialized) return;
+    localeInitialized = true;
     setLocale(state.locale);
     $$('#locale-toggle').forEach((node) => node.addEventListener('click', () => setLocale(state.locale === 'en' ? 'zh-CN' : 'en')));
   }
