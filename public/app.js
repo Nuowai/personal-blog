@@ -106,10 +106,10 @@ function initDeepSeekChat() {
 function initHome() {
   $('#theme-toggle')?.addEventListener('click', () => applyTheme(themes[(themes.indexOf(document.body.dataset.theme) + 1) % themes.length]));
   $('#search-form')?.addEventListener('submit', (event) => { event.preventDefault(); activeTag = ''; loadPosts().catch((error) => handleRequestError('#post-list', error)); });
-  $('#search-input')?.addEventListener('input', () => { clearTimeout(searchTimer); searchTimer = setTimeout(() => loadPosts().catch((error) => setHint('#post-list', error.message, true)), 300); });
-  $('#tag-filters')?.addEventListener('click', (event) => { const button = event.target.closest('[data-tag]'); if (!button) return; activeTag = button.dataset.tag; loadPosts().catch((error) => setHint('#post-list', error.message, true)); });
+  $('#search-input')?.addEventListener('input', () => { clearTimeout(searchTimer); searchTimer = setTimeout(() => loadPosts().catch((error) => setHint('#post-list', errorMessage(error), true)), 300); });
+  $('#tag-filters')?.addEventListener('click', (event) => { const button = event.target.closest('[data-tag]'); if (!button) return; activeTag = button.dataset.tag; loadPosts().catch((error) => setHint('#post-list', errorMessage(error), true)); });
   initSiteSettings().then((settings) => applyTheme(settings?.theme || 'sakura')).catch((error) => { applyTheme('sakura'); handleRequestError('#post-list', error); });
-  loadPosts().catch((error) => setHint('#post-list', error.message, true));
+  loadPosts().catch((error) => setHint('#post-list', errorMessage(error), true));
   loadGuestbook().catch((error) => handleRequestError('#guestbook-list', error));
   initGuestbook();
   initDeepSeekChat();
