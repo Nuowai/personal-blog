@@ -18,7 +18,9 @@ function createApp({ db, config }) {
   app.use('/api', createPostsRouter({ db, config }));
   app.use('/api', createCommunityRouter({ db }));
   app.use('/api', createAdminRouter({ db, config }));
-  app.use('/api', createIntegrationsRouter({ db, config }));
+  const integrations = createIntegrationsRouter({ db, config });
+  app.use('/api', integrations.apiRouter);
+  app.use('/', integrations.publicRouter);
 
   app.get('/health', (req, res) => res.json({ ok: true, service: 'sakura-note' }));
   app.use(notFound);
