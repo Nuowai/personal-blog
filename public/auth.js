@@ -1,4 +1,4 @@
-const { $, t, request, setHint } = window.Sakura;
+const { $, t, request, errorMessage, setHint } = window.Sakura;
 
 function showAuthUser(user) {
   const link = $('#auth-link');
@@ -12,7 +12,7 @@ async function submitAuth(form, mode) {
   const hint = $('#auth-hint'); const button = form.querySelector('button[type="submit"]');
   button.disabled = true; setHint(hint, t('common.loading'));
   try { await request(`/api/auth/${mode}`, { method: 'POST', body: JSON.stringify(Object.fromEntries(new FormData(form))) }); location.href = '/'; }
-  catch (error) { setHint(hint, error.message, true); }
+  catch (error) { setHint(hint, errorMessage(error), true); }
   finally { button.disabled = false; }
 }
 async function setupGoogleSignIn() {
