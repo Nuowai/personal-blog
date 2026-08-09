@@ -1,4 +1,4 @@
-const { $, t, escapeHtml, formatDate, request, setHint } = window.Sakura;
+const { $, t, escapeHtml, formatDate, request, errorMessage, setHint } = window.Sakura;
 const params = new URLSearchParams(location.search);
 const slug = params.get('slug');
 const root = $('#article-root');
@@ -29,7 +29,7 @@ async function loadComments() {
     try {
       await request(`/api/posts/${encodeURIComponent(slug)}/comments`, { method: 'POST', body: JSON.stringify(Object.fromEntries(new FormData(form))) });
       form.reset(); await loadComments();
-    } catch (error) { setHint('#comment-hint', error.message, true); }
+    } catch (error) { setHint('#comment-hint', errorMessage(error), true); }
     finally { button.disabled = false; }
   });
 }
@@ -42,7 +42,7 @@ async function loadArticle() {
     renderArticle(post);
     await loadComments();
   } catch (error) {
-    root.innerHTML = `<div class="empty-card">${escapeHtml(error.message || t('post.notFound'))}，<a href="/">${escapeHtml(t('common.backHome'))}</a></div>`;
+    root.innerHTML = `<div class="empty-card">${escapeHtml(errorMessage(error, 'post.notFound'))}，<a href="/">${escapeHtml(t('common.backHome'))}</a></div>`;
   }
 }
 
