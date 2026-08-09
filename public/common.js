@@ -155,7 +155,7 @@
     localStorage.setItem('sakura-note-locale', state.locale);
     document.documentElement.lang = state.locale;
     applyStaticTranslations();
-    $('#locale-toggle').forEach((node) => { node.textContent = t('common.locale'); node.title = t('common.locale'); });
+    $$('#locale-toggle').forEach((node) => { node.textContent = t('common.locale'); node.title = t('common.locale'); });
     window.dispatchEvent(new CustomEvent('sakura:locale-change', { detail: { locale: state.locale } }));
   }
   let localeInitialized = false;
