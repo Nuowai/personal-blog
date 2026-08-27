@@ -107,7 +107,7 @@ function initAiChat() {
   open.addEventListener('click', () => { panel.hidden = !panel.hidden; if (!panel.hidden) input.focus(); });
   close.addEventListener('click', () => { panel.hidden = true; });
   clear.addEventListener('click', () => { messages.splice(0, messages.length); saveHistory(); renderHistory(); input.focus(); });
-  provider.addEventListener('change', () => { if (presets[provider.value]) applyPreset(); });
+  provider.addEventListener('change', () => { if (presets[provider.value]) applyPreset(); sessionStorage.setItem(`${storagePrefix}provider`, provider.value); sessionStorage.setItem(`${storagePrefix}base-url`, baseUrl.value.trim()); sessionStorage.setItem(`${storagePrefix}model`, model.value.trim()); });
   const configPromise = request('/api/ai/config').then((config) => {
     const current = Object.entries(presets).find(([, preset]) => preset.baseUrl === config.baseUrl);
     provider.value = current?.[0] || 'custom';
