@@ -12,7 +12,7 @@
 - 4 套主题：樱花汽水、星夜紫、薄荷奶绿、薰衣草
 - 文章搜索、标签筛选、评论、留言板、RSS 和 sitemap
 - 文章正文支持 Markdown，服务端清理 HTML
-- DeepSeek 对话小窗：填写自己的 API Key
+- AI 对话小窗：支持 DeepSeek、OpenAI、OpenRouter、Moonshot、SiliconFlow 及其他 OpenAI 兼容接口；可配置 Base URL、模型，并保留最近 24 条对话上下文
 - Docker / docker compose 部署
 
 ## 本地运行
@@ -29,3 +29,8 @@ ADMIN_TOKEN=change-me npm start
 登录 `/admin.html` 后，在“网站外观”面板可以保存网站标题、简介、标签图标和壁纸。图标和壁纸支持上传媒体后填写 `/uploads/文件名`，也支持可信的 `https://` 地址。
 
 检查代码：`npm run check`；运行测试：`npm test`。
+
+
+### AI 供应商配置
+
+首页 AI 小助手支持直接填写供应商、OpenAI 兼容 Base URL、模型和 API Key。API Key 与最近对话只保存在当前浏览器会话，不会写入本站数据库。服务器端可用 `AI_PROVIDER`、`AI_BASE_URL`、`AI_MODEL` 设置默认值；生产环境要求 Base URL 使用 HTTPS，且禁止指向本机或内网地址。
