@@ -69,3 +69,4 @@ body[data-theme="night"].custom-wallpaper {
     grid-column: auto;
   }
 }
+.ai-settings label{display:grid;gap:5px;color:#80647e;font-size:10px;font-weight:800}.ai-settings label input,.ai-settings label select{margin-top:0}.ai-clear{justify-self:end;padding:6px 9px;color:#b66f91;border:1px solid #f1d8e4;border-radius:9px;background:#fff;font-size:10px}.ai-clear:hover{color:#fff;background:#e77fa4}.ai-settings-row label{min-width:0}.ai-settings-row label input,.ai-settings-row label select{width:100%;padding:8px 10px;color:var(--ink);border:1px solid #f1dce6;border-radius:10px;outline:none;background:#fff}
