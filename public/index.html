@@ -84,12 +84,17 @@
     </div>
   </main>
   <footer class="site-footer"><span>用一点点魔法和 SQLite 做成</span><span>© <span id="year"></span> Sakura Note · keep blooming ✨</span></footer>
-  <button class="ai-fab" id="ai-open" aria-label="打开 DeepSeek 小助手">✨</button>
-  <section class="ai-panel" id="ai-panel" hidden aria-label="DeepSeek 对话窗口">
-    <div class="ai-head"><div><strong data-i18n="home.aiTitle">DeepSeek 小助手</strong><small>输入你自己的 API Key 即可开始聊天</small></div><button class="ai-close" id="ai-close" type="button">×</button></div>
-    <div class="ai-settings"><input id="ai-key" type="password" autocomplete="off" placeholder="DeepSeek API Key（仅保存在本机）"><div class="ai-settings-row"><select id="ai-model"><option value="deepseek-chat">deepseek-chat</option><option value="deepseek-reasoner">deepseek-reasoner</option></select><span class="ai-note">Key 保存在本机，仅随对话转发，不写入本站数据库。</span></div></div>
-    <div class="ai-chat" id="ai-chat"><div class="ai-bubble">嗯～我是博客里的小助手。填好 API Key 后，想聊点什么都可以呀 ✨</div></div>
-    <form class="ai-input" id="ai-form"><textarea id="ai-message" rows="2" placeholder="和小助手说点什么…" required></textarea><button id="ai-send" type="submit" aria-label="发送">→</button></form>
+  <button class="ai-fab" id="ai-open" aria-label="打开 AI 小助手">✨</button>
+  <section class="ai-panel" id="ai-panel" hidden aria-label="AI 对话窗口">
+    <div class="ai-head"><div><strong data-i18n="ai.title">AI 小助手</strong><small data-i18n="ai.subtitle">支持 OpenAI 兼容接口</small></div><button class="ai-close" id="ai-close" type="button" aria-label="关闭">×</button></div>
+    <div class="ai-settings">
+      <div class="ai-settings-row"><label><span data-i18n="ai.provider">供应商</span><select id="ai-provider"><option value="DeepSeek">DeepSeek</option><option value="OpenAI">OpenAI</option><option value="OpenRouter">OpenRouter</option><option value="Moonshot">Moonshot</option><option value="SiliconFlow">SiliconFlow</option><option value="custom">自定义</option></select></label><label><span data-i18n="ai.model">模型</span><input id="ai-model" list="ai-models" value="deepseek-chat" autocomplete="off"><datalist id="ai-models"></datalist></label></div>
+      <label><span data-i18n="ai.baseUrl">OpenAI 兼容 Base URL</span><input id="ai-base-url" type="url" autocomplete="url" placeholder="https://api.deepseek.com/v1"></label>
+      <label><span data-i18n="ai.apiKey">API Key（仅保存在本机）</span><input id="ai-key" type="password" autocomplete="off" placeholder="sk-..."></label>
+      <div class="ai-settings-row"><span class="ai-note" data-i18n="ai.context">会携带最近 24 条消息作为上下文，Key 和历史只保存在本机。</span><button class="ai-clear" id="ai-clear" type="button" data-i18n="ai.clear">清空对话</button></div>
+    </div>
+    <div class="ai-chat" id="ai-chat"><div class="ai-bubble" data-i18n="ai.welcome">填好 API Key 和 Base URL 后，就可以开始聊天啦 ✨</div></div>
+    <form class="ai-input" id="ai-form"><textarea id="ai-message" rows="2" data-i18n-placeholder="ai.placeholder" placeholder="和小助手说点什么…" required></textarea><button id="ai-send" type="submit" aria-label="发送">→</button></form>
   </section>
   <script src="/common.js" defer></script><script src="/sakura.js" defer></script><script src="/auth.js" defer></script><script src="/location.js" defer></script><script src="/app.js" defer></script>
 </body>
