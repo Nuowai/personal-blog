@@ -51,9 +51,9 @@ function createAiRouter({ config }) {
   const limiter = rateLimit({ windowMs: 60 * 1000, max: 20 });
 
   router.get('/ai/config', (req, res) => res.json({
-    provider: process.env.AI_PROVIDER || DEFAULT_PROVIDER,
-    baseUrl: process.env.AI_BASE_URL || DEFAULT_BASE_URL,
-    model: process.env.AI_MODEL || DEFAULT_MODEL
+    provider: config.aiProvider || DEFAULT_PROVIDER,
+    baseUrl: config.aiBaseUrl || DEFAULT_BASE_URL,
+    model: config.aiModel || DEFAULT_MODEL
   }));
 
   router.post('/ai/chat', limiter, asyncHandler(async (req, res) => {
